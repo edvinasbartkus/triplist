@@ -28,7 +28,10 @@ export default class ShowScreen extends Component {
     if (buttonId === 'buttonAdd') {
       Navigation.push(this.props.componentId, {
         component: {
-          name: 'todotrip.AddItem'
+          name: 'todotrip.AddItem',
+          passProps: {
+            list: this.props.list
+          }
         }
       })
     }

@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {View, Text, NativeModules, StyleSheet, Button, FlatList} from 'react-native'
 import {Navigation} from 'react-native-navigation'
+import {updateList} from './../utils/db'
 
 export default class AddItemScreen extends Component {
   static options(passProps) {
@@ -56,8 +57,12 @@ export default class AddItemScreen extends Component {
     }
   }
 
-  onPress (location) {
-    alert('Great!')
+  async onPress (location) {
+    const {list} = this.props
+    list.items = [ location, ...list.items ]
+
+    await updateList(list, list._id)
+    Navigation.pop(this.props.componentId)
   }
 
   renderResult (location) {

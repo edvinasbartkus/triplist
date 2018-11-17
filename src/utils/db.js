@@ -12,6 +12,10 @@ export const saveList = (list) => {
   return DB.lists.add(list)
 }
 
+export const updateList = (list, _id) => {
+  return DB.lists.updateById(list, _id)
+}
+
 /*
 
 {
