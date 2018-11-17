@@ -6,6 +6,8 @@ PODS:
     - DoubleConversion
     - glog
   - glog (0.3.5)
+  - React (0.57.5):
+    - React/Core (= 0.57.5)
   - React/Core (0.57.5):
     - yoga (= 0.57.5.React)
   - React/CxxBridge (0.57.5):
@@ -41,6 +43,8 @@ PODS:
     - React/Core
     - React/fishhook
     - React/RCTBlob
+  - ReactNativeNavigation (2.0.2641):
+    - React
   - yoga (0.57.5.React)
 
 DEPENDENCIES:
@@ -55,6 +59,7 @@ DEPENDENCIES:
   - React/RCTNetwork (from `../node_modules/react-native`)
   - React/RCTText (from `../node_modules/react-native`)
   - React/RCTWebSocket (from `../node_modules/react-native`)
+  - ReactNativeNavigation (from `../node_modules/react-native-navigation/ReactNativeNavigation.podspec`)
   - yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -70,6 +75,8 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
   React:
     :path: "../node_modules/react-native"
+  ReactNativeNavigation:
+    :podspec: "../node_modules/react-native-navigation/ReactNativeNavigation.podspec"
   yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -79,8 +86,9 @@ SPEC CHECKSUMS:
   Folly: c89ac2d5c6ab169cd7397ef27485c44f35f742c7
   glog: e8acf0ebbf99759d3ff18c86c292a5898282dcde
   React: 1fe0eb13d90b625d94c3b117c274dcfd2e760e11
+  ReactNativeNavigation: b6a5844caf84a5f69ca6081b0caffd3d75194aa5
   yoga: b1ce48b6cf950b98deae82838f5173ea7cf89e85
 
-PODFILE CHECKSUM: 124f9f2200ad9274705d246d587369e867689ed3
+PODFILE CHECKSUM: 8e2dc37809ac53adfcc1d226b7e8945690a3ce2d
 
 COCOAPODS: 1.5.3

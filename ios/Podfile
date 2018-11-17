@@ -1,5 +1,6 @@
 platform :ios, '9.0'
 target 'todotrip' do
+  pod 'ReactNativeNavigation', :podspec => '../node_modules/react-native-navigation/ReactNativeNavigation.podspec'
   pod "React", path: '../node_modules/react-native', subspecs: [
     'Core',
     'CxxBridge',
