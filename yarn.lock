@@ -4616,6 +4616,11 @@ react-is@^16.6.1:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.6.3.tgz#d2d7462fcfcbe6ec0da56ad69047e47e56e7eac0"
   integrity sha512-u7FDWtthB4rWibG/+mFbVd5FvdI20yde86qKGx4lVUTWmPlSWQ4QxbBIrrs+HnXGbxOUlUzTAP/VDmvCwaP2yA==
 
+react-native-store@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/react-native-store/-/react-native-store-0.4.1.tgz#dc0c61021b9b033ae3c06660ec1985771aa4300c"
+  integrity sha1-3AxhAhubAzrjwGZg7BmFdxqkMAw=
+
 react-native@0.57.5:
   version "0.57.5"
   resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.57.5.tgz#f1dbcbf1f889845fba954f3e0d47e61cf89d41d9"
