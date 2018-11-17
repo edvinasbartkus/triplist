@@ -6,7 +6,7 @@ export default class ShowScreen extends Component {
     return (
       <SafeAreaView>
         <View>
-          <Text>This is show screen</Text>
+          <Text>This is show screen {JSON.stringify(this.props)}</Text>
         </View>
       </SafeAreaView>
     )

@@ -4,6 +4,14 @@ export const DB = {
   'lists': Store.model('lists')
 }
 
+export const getLists = () => {
+  return DB.lists.find()
+}
+
+export const saveList = (list) => {
+  return DB.lists.add(list)
+}
+
 /*
 
 {
