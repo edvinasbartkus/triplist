@@ -1259,7 +1259,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.edvinasbartkus.todotrip;
+				PRODUCT_BUNDLE_IDENTIFIER = com.edvinasbartkus.todotrip;
 				PRODUCT_NAME = todotrip;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1279,7 +1279,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.edvinasbartkus.todotrip;
+				PRODUCT_BUNDLE_IDENTIFIER = com.edvinasbartkus.todotrip;
 				PRODUCT_NAME = todotrip;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
