@@ -1,5 +1,6 @@
 platform :ios, '9.0'
 target 'todotrip' do
+  rn_maps_path = '../node_modules/react-native-maps'
   pod 'ReactNativeNavigation', :podspec => '../node_modules/react-native-navigation/ReactNativeNavigation.podspec'
   pod "React", path: '../node_modules/react-native', subspecs: [
     'Core',
@@ -16,4 +17,19 @@ target 'todotrip' do
   pod 'DoubleConversion', :podspec => '../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec'
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
+
+  pod 'react-native-maps', path: rn_maps_path
 end
+
+# post_install do |installer|
+#   installer.pods_project.targets.each do |target|
+#     if target.name == 'react-native-google-maps'
+#       target.build_configurations.each do |config|
+#         config.build_settings['CLANG_ENABLE_MODULES'] = 'No'
+#       end
+#     end
+#     if target.name == "React"
+#       target.remove_from_project
+#     end
+#   end
+# end
