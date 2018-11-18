@@ -4,6 +4,8 @@ import MapView, {Marker} from 'react-native-maps'
 import {Navigation} from 'react-native-navigation'
 import DraggableFlatList from 'react-native-draggable-flatlist'
 import {updateList, findById} from './../utils/db'
+import {KEY} from './../utils/maps'
+import MapViewDirections from 'react-native-maps-directions'
 
 export default class ShowScreen extends Component {
   static options(passProps) {
@@ -81,8 +83,31 @@ export default class ShowScreen extends Component {
         }}
       >
         {this.state.list.items.map(it => this.renderMarker(it))}
+        {this.renderDirections()}
       </MapView>
     )
+  }
+
+  renderDirections () {
+    const results = []
+    let start = this.state.list.items[0]
+    for (const item of this.state.list.items.slice(1)) {
+      results.push(
+        <MapViewDirections
+          key={`${start.name}_${item.name}`}
+          origin={start.location}
+          destination={item.location}
+          apikey={KEY}
+          mode='walking'
+          strokeWidth={3}
+          strokeColor="hotpink"
+        />
+      )
+
+      start = item
+    }
+
+    return results
   }
 
   render () {
