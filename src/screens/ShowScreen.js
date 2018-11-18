@@ -77,6 +77,17 @@ export default class ShowScreen extends Component {
     });
   }
 
+  async onComplete (item) {
+    const list = this.state.list
+    const items = list.items.map(it => {
+      return {...it, completed: it.name === item.name ? true : item.completed}
+    })
+
+    const newList = {...list, items}
+    this.setState({list: newList})
+    await updateList(newList, list._id)
+  }
+
   renderMarker (place, index) {
     return (
       <Marker 
@@ -84,7 +95,7 @@ export default class ShowScreen extends Component {
         coordinate={place.location}
         title={place.name}
       >
-        <View style={[styles.marker, {backgroundColor: getColor(0)}]}>
+        <View style={[styles.marker, {backgroundColor: place.completed ? 'green' : getColor(0)}]}>
           <Text style={styles.markerText}>{index + 1}</Text>
         </View>
       </Marker>
@@ -94,7 +105,7 @@ export default class ShowScreen extends Component {
   renderItem = ({ item, index, move, moveEnd, isActive }) => {
     return (
       <SwipeRow leftOpenValue={75} rightOpenValue={-75}>
-        <TouchableOpacity style={styles.complete}>
+        <TouchableOpacity onPress={() => this.onComplete(item)} style={styles.complete}>
           <Text style={styles.completeText}>Complete</Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -116,9 +127,6 @@ export default class ShowScreen extends Component {
                 <TouchableOpacity onPress={() => this.changeMode(item)}>
                   <Text>Mode: {item.mode}</Text>
                 </TouchableOpacity>
-                <View>
-                  <Text>Completed: {item.completed === false ? 'NO' : 'YES'}</Text>
-                </View>
               </View>
             </View>
           </View>
