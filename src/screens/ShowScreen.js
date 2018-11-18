@@ -63,10 +63,20 @@ export default class ShowScreen extends Component {
   renderItem = ({ item, index, move, moveEnd, isActive }) => {
     return (
       <TouchableOpacity
-        style={styles.item}
+        style={{ 
+          height: 100, 
+          backgroundColor: isActive ? 'blue' : '#333',
+          alignItems: 'center', 
+          justifyContent: 'center' 
+        }}
         onLongPress={move}
-        onPressOut={moveEnd}>
-        <Text>{item.name}</Text>
+        onPressOut={moveEnd}
+      >
+        <Text style={{ 
+          fontWeight: 'bold', 
+          color: 'white',
+          fontSize: 32,
+        }}>{item.name}</Text>
       </TouchableOpacity>
     )
   }
