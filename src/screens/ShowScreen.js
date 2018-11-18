@@ -35,6 +35,10 @@ export default class ShowScreen extends Component {
   async componentDidAppear () {
     const list = await findById(this.state.list._id)
     this.setState({list})
+
+    if (this.map) {
+      this.map.fitToElements()
+    }
   }
 
   navigationButtonPressed({ buttonId }) {
@@ -122,7 +126,7 @@ export default class ShowScreen extends Component {
     )
   }
 
-  _headerComponent = () => <Map list={this.state.list} />
+  _headerComponent = () => <Map ref={map => { this.map = map }} list={this.state.list} />
 
   render () {
     return (

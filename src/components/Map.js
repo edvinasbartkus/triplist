@@ -10,6 +10,12 @@ export default class Map extends Component {
     super(props)
   }
 
+  fitToElements () {
+    if (this.map) {
+      this.map.fitToElements(true)
+    }
+  }
+
   renderMarker (place, index) {
     return (
       <Marker 
@@ -52,6 +58,7 @@ export default class Map extends Component {
     const {list} = this.props
     return (
       <MapView
+        ref={map => { this.map = map } }
         style={styles.map}
         initialRegion={{
           latitude: 37.78825,
