@@ -4,11 +4,97 @@ import {Navigation} from 'react-native-navigation'
 
 import {getLists, deleteList} from './../utils/db'
 import {getColor} from './../utils/consts'
+import uuid from 'uuid'
 
 const DOTS_IMAGE = require('./../assets/oval.png')
 
 const jsonLists = [
-  {name: 'Vilnius', items: []}
+  {name: 'Vilnius', items: [
+    {
+      id: uuid(),
+      title: 'Gediminas Castle Tower',
+      name: 'Gediminas Castle Tower',
+      completed: false,
+      readonly: true,
+      mode: 'walking',
+      location: {
+        latitude: 54.6866631,
+        longitude: 25.2884653
+      }
+    },
+    {
+      id: uuid(),
+      title: 'Vilnius Cathedral',
+      name: 'Vilnius Cathedral',
+      completed: false,
+      readonly: true,
+      mode: 'walking',
+      location: {
+        latitude: 54.6858517,
+        longitude: 25.2855455
+      }
+    },
+    {
+      id: uuid(),
+      title: 'City park',
+      name: 'City park',
+      completed: false,
+      readonly: true,
+      mode: 'walking',
+      location: {
+        latitude: 54.6874297,
+        longitude: 25.2791292
+      }
+    },
+    {
+      id: uuid(),
+      title: 'Vokiečių str.',
+      name: 'Vokiečių str.',
+      completed: false,
+      readonly: true,
+      mode: 'walking',
+      location: {
+        latitude: 54.6791502,
+        longitude: 25.2821801
+      }
+    },
+    {
+      id: uuid(),
+      title: 'Vilnius Townhall',
+      name: 'Vilnius Townhall',
+      completed: false,
+      readonly: true,
+      mode: 'walking',
+      location: {
+        latitude: 54.6781798,
+        longitude: 25.2847437
+      }
+    },
+    {
+      id: uuid(),
+      title: 'Bernardine Park',
+      name: 'Bernardine Park',
+      completed: false,
+      readonly: true,
+      mode: 'walking',
+      location: {
+        latitude: 54.6844001,
+        longitude: 25.2932583
+      }
+    },
+    {
+      id: uuid(),
+      title: 'Presidentail Palace',
+      name: 'Presidentail Palace',
+      completed: false,
+      readonly: true,
+      mode: 'walking',
+      location: {
+        latitude: 54.6831548,
+        longitude: 25.2838108
+      }
+    },
+  ]}
 ]
 
 export default class HomeScreen extends Component {
