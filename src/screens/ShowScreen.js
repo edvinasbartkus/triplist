@@ -129,11 +129,12 @@ export default class ShowScreen extends Component {
   _headerComponent = () => <Map ref={map => { this.map = map }} list={this.state.list} />
 
   render () {
+    const {list} = this.state
     return (
       <View style={styles.container}>
         <DraggableFlatList
           ListHeaderComponent={this._headerComponent}
-          data={this.state.list.items}
+          data={(list || {}).items || []}
           renderItem={this.renderItem}
           keyExtractor={(item, index) => `draggable-item-${item.name}`}
           onMoveEnd={async ({ data }) => {
