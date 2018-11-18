@@ -1,11 +1,13 @@
 import React, {Component} from 'react'
-import {View, ActionSheetIOS, TouchableOpacity, Text, StyleSheet} from 'react-native'
+import {View, ActionSheetIOS, ScrollView, TouchableOpacity, Text, StyleSheet, TouchableHighlight} from 'react-native'
 import {Navigation} from 'react-native-navigation'
 import DraggableFlatList from 'react-native-draggable-flatlist'
 import {updateList, findById} from './../utils/db'
 import {SwipeRow} from 'react-native-swipe-list-view'
 import {getColor} from '../utils/consts'
 import Map from '../components/Map'
+import SortableListView from 'react-native-sortable-listview'
+import SwipeableRow from 'react-native/Libraries/Experimental/SwipeableRow/SwipeableRow'
 
 export default class ShowScreen extends Component {
   static options(passProps) {
@@ -79,28 +81,90 @@ export default class ShowScreen extends Component {
     });
   }
 
+  update (list) {
+    this.setState({list}, async () => {
+      await updateList(list, list._id)
+    })
+  }
+
   async onComplete (item) {
     const list = this.state.list
     const items = list.items.map(it => {
       return {...it, completed: it.name === item.name ? true : item.completed}
     })
 
-    const newList = {...list, items}
-    this.setState({list: newList})
-    await updateList(newList, list._id)
+    this.update({...list, items})
   }
 
-  renderItem = ({ item, index, move, moveEnd, isActive }) => {
+  async onDelete (item) {
+    const list = this.state.list
+    const items = list.items.filter(it => it.id !== item.id)
+    this.update({...list, items})
+  }
+
+  _headerComponent = () => <Map ref={map => { this.map = map }} list={this.state.list} />
+
+  render () {
+    const {list} = this.state
+
+    const data = {}
+    const order = []
+    for (const item of list.items) {
+      data[item.id] = item
+      order.push(item.id)
+    }
+
     return (
-      <SwipeRow leftOpenValue={75} rightOpenValue={-75}>
-        <TouchableOpacity onPress={() => this.onComplete(item)} style={styles.complete}>
-          <Text style={styles.completeText}>Complete</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.itemBox}
-          onLongPress={move}
-          onPressOut={moveEnd}
-        >
+      <SortableListView
+          renderHeader={this._headerComponent}
+          style={{flex: 1, marginBottom: 0}}
+          data={data}
+          order={Object.keys(data)}
+          onRowMoved={async e => {
+            const {list} = this.state
+            const items = [...list.items]
+            items.splice(e.to, 0, items.splice(e.from, 1)[0])
+            const newList = {...list, items}
+            this.setState({list: newList})
+            this.forceUpdate()
+            await updateList(newList, list._id)
+          }}
+          renderRow={(item, sectionId, rowId) => {
+            const index = order.indexOf(rowId)
+            return (
+              <Item 
+                changeMode={item => this.changeMode(item)}
+                onComplete={item => this.onComplete(item)}
+                onDelete={item => this.onDelete(item)}
+                {...{item, index}}
+              />
+            )
+          }}
+      />
+    )
+  }
+}
+
+class Item extends React.Component {
+  render () {
+    const {index, item} = this.props
+
+    return (
+      <SwipeableRow
+        isOpen={false}
+        shouldBounceOnMount={true}
+        maxSwipeDistance={75}
+        preventSwipeRight={true}
+        slideoutView={
+          <View style={styles.rowBack}>
+            <View style={styles.complete} />
+            <TouchableOpacity onPress={() => this.props.onDelete(item)} style={styles.delete}>
+              <Text style={styles.deleteText}>Delete</Text>
+            </TouchableOpacity>
+          </View>
+        }
+      >
+        <TouchableHighlight underlayColor={'#F5F5F5'} {...this.props.sortHandlers}>
           <View style={styles.itemContainer}>
             <View style={styles.itemIconContainer}>
               <View style={[styles.itemIcon, {backgroundColor: getColor(0)}]}>
@@ -112,40 +176,14 @@ export default class ShowScreen extends Component {
             <View style={styles.textsContainer}>
               <Text style={styles.itemText}>{item.name}</Text>
               <View style={styles.actionsContainer}>
-                <TouchableOpacity onPress={() => this.changeMode(item)}>
+                <TouchableOpacity onPress={() => this.props.changeMode(item)}>
                   <Text>Mode: {item.mode}</Text>
                 </TouchableOpacity>
               </View>
             </View>
           </View>
-        </TouchableOpacity>
-        <View style={{width: 75}}>
-          <Text>Delete</Text>
-        </View>
-      </SwipeRow>
-    )
-  }
-
-  _headerComponent = () => <Map ref={map => { this.map = map }} list={this.state.list} />
-
-  render () {
-    const {list} = this.state
-    return (
-      <View style={styles.container}>
-        <DraggableFlatList
-          ListHeaderComponent={this._headerComponent}
-          data={(list || {}).items || []}
-          renderItem={this.renderItem}
-          keyExtractor={(item, index) => `draggable-item-${item.name}`}
-          onMoveEnd={async ({ data }) => {
-            const list = {...this.state.list, items: data}
-            this.setState({list})
-
-            // Keep it last so it doesn't affect the performance
-            await updateList(list, this.state.list._id)
-          }}
-        />
-      </View>
+        </TouchableHighlight>
+      </SwipeableRow>
     )
   }
 }
@@ -160,7 +198,10 @@ const styles = StyleSheet.create({
   },
 
   itemContainer: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    backgroundColor: 'white',
+    paddingTop: 10,
+    paddingBottom: 10,
   },
 
   itemIconContainer: {
@@ -201,12 +242,31 @@ const styles = StyleSheet.create({
     fontSize: 22,
   },
 
+  rowBack: {
+    alignItems: 'center',
+    backgroundColor: '#DDD',
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+
   complete: {
     width: 75,
-    height: 50,
+    height: 70,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+
+  delete: {
+    width: 75,
+    height: 70,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'green'
+    backgroundColor: 'red'
+  },
+
+  deleteText: {
+    color: 'white'
   },
 
   completeText: {

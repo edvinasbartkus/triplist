@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {View, Text, NativeModules, StyleSheet, Button, FlatList} from 'react-native'
 import {Navigation} from 'react-native-navigation'
 import {updateList} from './../utils/db'
+import uuid from 'uuid'
 
 export default class AddItemScreen extends Component {
   static options(passProps) {
@@ -59,7 +60,7 @@ export default class AddItemScreen extends Component {
 
   async onPress (location) {
     const {list} = this.props
-    list.items.push({ ...location, mode: 'walking', completed: false})
+    list.items.push({ ...location, id: uuid(), mode: 'walking', completed: false})
     // list.items = [ location, ...list.items ]
 
     await updateList(list, list._id)
