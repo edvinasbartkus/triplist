@@ -60,6 +60,17 @@ export default class HomeScreen extends Component {
         name: 'todotrip.Show',
         passProps: {
           list
+        },
+        options: {
+          topBar: {
+            title: {
+              text: list.name
+            },
+            backButton: {
+              title: 'Back',
+              showTitle: false
+            }
+          },
         }
       }
     })
