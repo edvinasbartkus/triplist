@@ -20,6 +20,7 @@ target 'todotrip' do
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
   pod 'react-native-maps', path: rn_maps_path
+  pod 'react-native-autocomplete', path: '../node_modules/react-native-autocomplete/react-native-autocomplete.podspec'
 end
 
 # post_install do |installer|

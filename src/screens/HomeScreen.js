@@ -7,12 +7,16 @@ import {getColor} from './../utils/consts'
 
 const DOTS_IMAGE = require('./../assets/oval.png')
 
+const jsonLists = [
+  {name: 'Vilnius', items: []}
+]
+
 export default class HomeScreen extends Component {
   static options(passProps) {
     return {
       topBar: {
         title: {
-          text: 'TODO Trip'
+          text: 'Triplist'
         },
         drawBehind: false,
         visible: true,
@@ -37,12 +41,16 @@ export default class HomeScreen extends Component {
 
   navigationButtonPressed({ buttonId }) {
     if (buttonId === 'buttonAdd') {
-      Navigation.push(this.props.componentId, {
-        component: {
-          name: 'todotrip.AddList'
-        }
-      })
+      this.newList()
     }
+  }
+
+  newList () {
+    Navigation.push(this.props.componentId, {
+      component: {
+        name: 'todotrip.AddList'
+      }
+    })
   }
 
   async componentDidAppear () {
@@ -115,10 +123,28 @@ export default class HomeScreen extends Component {
     const {lists} = this.state
     return (
       <SafeAreaView>
-        <View style={styles.cardContainer}>
-          {lists.map((list, index) => this.renderList(list, index))}
+        <View style={{flexBasis: 10, flexDirection: 'column'}}>
+          <View style={[styles.cardContainer, {flex: 2}]}>
+            <Text style={styles.h1}>Your lists</Text>
+            {lists.map((list, index) => this.renderList(list, index))}
+            {lists.length === 0 ? <NewList onPress={() => this.newList()} /> : null}
+            <Text style={styles.h1}>Inspiration</Text>
+            {jsonLists.map((list, index) => this.renderList(list, index))}
+          </View>
         </View>
       </SafeAreaView>
+    )
+  }
+}
+
+class NewList extends Component {
+  render () {
+    return (
+      <TouchableOpacity onPress={() => this.props.onPress()} style={styles.newContainer}>
+        <View style={styles.newInnerContainer}>
+          <Text style={styles.newContainerText}>Create new travel list</Text>
+        </View>
+      </TouchableOpacity>
     )
   }
 }
@@ -158,5 +184,35 @@ const styles = StyleSheet.create({
 
   image: {
     alignSelf: 'flex-end'
+  },
+
+  newContainer: {
+    width: '50%',
+    height: 115,
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingTop: 10
+  },
+
+  newInnerContainer: {
+    height: 100,
+    borderRadius: 5,
+    padding: 10,
+    borderColor: getColor(0),
+    borderWidth: 2,
+    justifyContent: 'flex-end'
+  },
+
+  newContainerText: {
+    color: getColor(0)
+  },
+
+  h1: {
+    width: '100%',
+    paddingLeft: 10,
+    paddingTop: 30,
+    height: 60,
+    fontSize: 24,
+    fontWeight: '600'
   }
 })

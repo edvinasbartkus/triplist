@@ -92,10 +92,9 @@ export default class ShowScreen extends Component {
     });
   }
 
-  update (list) {
-    this.setState({list}, async () => {
-      await updateList(list, list._id)
-    })
+  async update (list) {
+    this.setState({list})
+    await updateList(list, list._id)
   }
 
   async onComplete (item) {

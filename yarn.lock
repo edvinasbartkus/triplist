@@ -4633,6 +4633,11 @@ react-lifecycles-compat@2.0.0:
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-2.0.0.tgz#71d9c4cde47114c4102454f76da055c2bc48c948"
   integrity sha512-txfpPCQYiazVdcbMRhatqWKcAxJweUu2wDXvts5/7Wyp6+Y9cHojqXHsLPEckzutfHlxZhG8Oiundbmp8Fd6eQ==
 
+react-native-autocomplete@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/react-native-autocomplete/-/react-native-autocomplete-0.4.0.tgz#df786ca3e5efbd161e2bd87c39d4984f00dfc047"
+  integrity sha512-rDsPwbPai1DNDHTc+ECHBlEgKOZu7WisuFlokJJwjfyXcClAzBqBmvHDXWBBqWPZdFZeMS7OFB6G0cZ2ck1QRg==
+
 react-native-draggable-flatlist@^1.1.5:
   version "1.1.5"
   resolved "https://registry.yarnpkg.com/react-native-draggable-flatlist/-/react-native-draggable-flatlist-1.1.5.tgz#9f4ce652f9a3ca2f55bf9a4972d735846b2ea6b5"
