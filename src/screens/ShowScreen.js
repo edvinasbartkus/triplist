@@ -1,13 +1,11 @@
 import React, {Component} from 'react'
 import {View, ActionSheetIOS, TouchableOpacity, Text, StyleSheet} from 'react-native'
-import MapView, {Marker} from 'react-native-maps'
 import {Navigation} from 'react-native-navigation'
 import DraggableFlatList from 'react-native-draggable-flatlist'
 import {updateList, findById} from './../utils/db'
-import {KEY} from './../utils/maps'
-import MapViewDirections from 'react-native-maps-directions'
 import {SwipeRow} from 'react-native-swipe-list-view'
 import {getColor} from '../utils/consts'
+import Map from '../components/Map'
 
 export default class ShowScreen extends Component {
   static options(passProps) {
@@ -68,7 +66,7 @@ export default class ShowScreen extends Component {
 
       const list = this.state.list
       const items = list.items.map(it => {
-        return {...it, mode: it.name === item.name ? newMode : item.mode}
+        return {...it, mode: it.name === item.name ? newMode : it.mode}
       })
 
       const newList = {...list, items}
@@ -86,20 +84,6 @@ export default class ShowScreen extends Component {
     const newList = {...list, items}
     this.setState({list: newList})
     await updateList(newList, list._id)
-  }
-
-  renderMarker (place, index) {
-    return (
-      <Marker 
-        key={place.name}
-        coordinate={place.location}
-        title={place.name}
-      >
-        <View style={[styles.marker, {backgroundColor: place.completed ? 'green' : getColor(0)}]}>
-          <Text style={styles.markerText}>{index + 1}</Text>
-        </View>
-      </Marker>
-    )
   }
 
   renderItem = ({ item, index, move, moveEnd, isActive }) => {
@@ -138,50 +122,13 @@ export default class ShowScreen extends Component {
     )
   }
 
-  renderHeader () {
-    return (
-      <MapView
-        style={styles.map}
-        initialRegion={{
-          latitude: 37.78825,
-          longitude: -122.4324,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        }}
-      >
-        {this.state.list.items.map((it, index) => this.renderMarker(it, index))}
-        {this.renderDirections()}
-      </MapView>
-    )
-  }
-
-  renderDirections () {
-    const results = []
-    let start = this.state.list.items[0]
-    for (const item of this.state.list.items.slice(1)) {
-      results.push(
-        <MapViewDirections
-          key={`${start.name}_${item.name}`}
-          origin={start.location}
-          destination={item.location}
-          apikey={KEY}
-          mode={item.mode || 'walking'}
-          strokeWidth={3}
-          strokeColor={getColor(0)}
-        />
-      )
-
-      start = item
-    }
-
-    return results
-  }
+  _headerComponent = () => <Map list={this.state.list} />
 
   render () {
     return (
       <View style={styles.container}>
         <DraggableFlatList
-          ListHeaderComponent={() => this.renderHeader()}
+          ListHeaderComponent={this._headerComponent}
           data={this.state.list.items}
           renderItem={this.renderItem}
           keyExtractor={(item, index) => `draggable-item-${item.name}`}
@@ -199,11 +146,6 @@ export default class ShowScreen extends Component {
 }
 
 const styles = StyleSheet.create({
-  map: {
-    width: '100%',
-    height: 300
-  },
-
   container: {
     flex: 1,
   },
@@ -264,18 +206,5 @@ const styles = StyleSheet.create({
 
   completeText: {
     color: 'white'
-  },
-
-  marker: {
-    width: 15,
-    height: 15,
-    borderRadius: 15,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-
-  markerText: {
-    color: 'white',
-    fontSize: 10
   }
 })
