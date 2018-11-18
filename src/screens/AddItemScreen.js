@@ -59,7 +59,8 @@ export default class AddItemScreen extends Component {
 
   async onPress (location) {
     const {list} = this.props
-    list.items = [ location, ...list.items ]
+    list.items.push({ ...location, mode: 'walking', completed: false})
+    // list.items = [ location, ...list.items ]
 
     await updateList(list, list._id)
     Navigation.pop(this.props.componentId)

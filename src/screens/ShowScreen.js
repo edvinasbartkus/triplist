@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {View, SafeAreaView, TouchableOpacity, Text, StyleSheet} from 'react-native'
+import {View, ActionSheetIOS, TouchableOpacity, Text, StyleSheet} from 'react-native'
 import MapView, {Marker} from 'react-native-maps'
 import {Navigation} from 'react-native-navigation'
 import DraggableFlatList from 'react-native-draggable-flatlist'
@@ -52,6 +52,31 @@ export default class ShowScreen extends Component {
     }
   }
 
+  changeMode (item) {
+    ActionSheetIOS.showActionSheetWithOptions({
+      options: ['Cancel', 'Transit', 'Bicycle', 'Driving', 'Walking'],
+      cancelButtonIndex: 0,
+    }, async (buttonIndex) => {
+      let newMode
+      switch (buttonIndex) {
+        case 1: newMode = 'transit'; break;
+        case 2: newMode = 'bicycling'; break;
+        case 3: newMode = 'driving'; break;
+        case 4: newMode = 'walking'; break;
+        default: newMode = item.mode; break;
+      }
+
+      const list = this.state.list
+      const items = list.items.map(it => {
+        return {...it, mode: it.name === item.name ? newMode : item.mode}
+      })
+
+      const newList = {...list, items}
+      this.setState({list: newList})
+      await updateList(newList, list._id)
+    });
+  }
+
   renderMarker (place, index) {
     return (
       <Marker 
@@ -87,7 +112,14 @@ export default class ShowScreen extends Component {
             </View>
             <View style={styles.textsContainer}>
               <Text style={styles.itemText}>{item.name}</Text>
-              <View></View>
+              <View style={styles.actionsContainer}>
+                <TouchableOpacity onPress={() => this.changeMode(item)}>
+                  <Text>Mode: {item.mode}</Text>
+                </TouchableOpacity>
+                <View>
+                  <Text>Completed: {item.completed === false ? 'NO' : 'YES'}</Text>
+                </View>
+              </View>
             </View>
           </View>
         </TouchableOpacity>
@@ -125,7 +157,7 @@ export default class ShowScreen extends Component {
           origin={start.location}
           destination={item.location}
           apikey={KEY}
-          mode='walking'
+          mode={item.mode || 'walking'}
           strokeWidth={3}
           strokeColor={getColor(0)}
         />
@@ -204,6 +236,10 @@ const styles = StyleSheet.create({
 
   textsContainer: {
     justifyContent: 'center'
+  },
+
+  actionsContainer: {
+    flexDirection: 'row'
   },
 
   itemText: { 
