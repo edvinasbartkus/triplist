@@ -8,9 +8,10 @@ export default class AddItemScreen extends Component {
   static options(passProps) {
     return {
       topBar: {
-        drawBehind: false,
+        drawBehind: true,
         visible: true,
-        searchBar: true
+        searchBar: true,
+        searchBarHiddenWhenScrolling: false
       }
     }
   }
@@ -136,7 +137,7 @@ const styles = StyleSheet.create({
   },
 
   separator: {
-    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopWidth: 1,
     borderTopColor: '#666'
   }
 })

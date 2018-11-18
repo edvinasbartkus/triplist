@@ -14,7 +14,11 @@ export default class ShowScreen extends Component {
   static options(passProps) {
     return {
       topBar: {
-        drawBehind: false,
+        drawBehind: true,
+        background: {
+          translucent: true,
+          blur: true,
+        },
         visible: true,
         rightButtons: [
           {
@@ -36,13 +40,17 @@ export default class ShowScreen extends Component {
   }
 
   async componentDidAppear () {
-    const list = await findById(this.state.list._id)
-    if (list) {
-      this.setState({list})
-    }
+    await this.load()
 
     if (this.map) {
       this.map.fitToElements()
+    }
+  }
+
+  async load () {
+    const list = await findById(this.state.list._id)
+    if (list) {
+      this.setState({list})
     }
   }
 
@@ -105,7 +113,11 @@ export default class ShowScreen extends Component {
     this.update({...list, items})
   }
 
-  _headerComponent = () => <Map ref={map => { this.map = map }} list={this.state.list} />
+  _headerComponent = () => <Map
+    ref={map => { this.map = map }}
+    reload={() => this.load()}
+    list={this.state.list}
+  />
 
   render () {
     const {list} = this.state
@@ -121,6 +133,7 @@ export default class ShowScreen extends Component {
 
     return (
       <SortableListView
+          contentInset={{top: -50}}
           renderHeader={this._headerComponent}
           style={{flex: 1, marginBottom: 0}}
           data={data}

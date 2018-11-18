@@ -14,10 +14,10 @@ export default class Circle extends PureComponent {
 
     const [containerStyle, textStyle] = completed ? [
         {backgroundColor: color, borderWidth: 2, borderColor: color, width: w, height: w, borderRadius: w, ...container},
-        {color: 'white', fontWeight: '500'}
+        {color: 'white', fontSize: w / 2, fontWeight: '500'}
       ] : [
         {backgroundColor: 'white', borderWidth: 2, borderColor: color, width: w, height: w, borderRadius: w, ...container},
-        {color: color, fontWeight: '500'}
+        {color: color, fontSize: w / 2, fontWeight: '500'}
       ]
 
     return (
