@@ -6,6 +6,7 @@ import {updateList, findById} from './../utils/db'
 import {SwipeRow} from 'react-native-swipe-list-view'
 import {getColor} from '../utils/consts'
 import Map from '../components/Map'
+import Circle from '../components/Circle'
 import SortableListView from 'react-native-sortable-listview'
 import SwipeableRow from 'react-native/Libraries/Experimental/SwipeableRow/SwipeableRow'
 
@@ -36,7 +37,9 @@ export default class ShowScreen extends Component {
 
   async componentDidAppear () {
     const list = await findById(this.state.list._id)
-    this.setState({list})
+    if (list) {
+      this.setState({list})
+    }
 
     if (this.map) {
       this.map.fitToElements()
@@ -90,7 +93,7 @@ export default class ShowScreen extends Component {
   async onComplete (item) {
     const list = this.state.list
     const items = list.items.map(it => {
-      return {...it, completed: it.name === item.name ? true : item.completed}
+      return {...it, completed: it.id === item.id ? !it.completed : it.completed}
     })
 
     this.update({...list, items})
@@ -109,7 +112,9 @@ export default class ShowScreen extends Component {
 
     const data = {}
     const order = []
-    for (const item of list.items) {
+
+    const items = (list.items || {}) || []
+    for (const item of items) {
       data[item.id] = item
       order.push(item.id)
     }
@@ -167,18 +172,20 @@ class Item extends React.Component {
         <TouchableHighlight underlayColor={'#F5F5F5'} {...this.props.sortHandlers}>
           <View style={styles.itemContainer}>
             <View style={styles.itemIconContainer}>
-              <View style={[styles.itemIcon, {backgroundColor: getColor(0)}]}>
-                <Text style={styles.itemIconText}>
-                  {index + 1}
-                </Text>
-              </View>
+              <Circle
+                onPress={() => this.props.onComplete(item)}
+                text={index + 1}
+                color={getColor(0)}
+                completed={item.completed} />
             </View>
             <View style={styles.textsContainer}>
               <Text style={styles.itemText}>{item.name}</Text>
               <View style={styles.actionsContainer}>
-                <TouchableOpacity onPress={() => this.props.changeMode(item)}>
-                  <Text>Mode: {item.mode}</Text>
-                </TouchableOpacity>
+                {index > 0 ?
+                  <TouchableOpacity onPress={() => this.props.changeMode(item)}>
+                    <Text style={styles.subline}>{item.mode}</Text>
+                  </TouchableOpacity>
+                  : <Text style={styles.subline}>Starting point</Text>}
               </View>
             </View>
           </View>
@@ -210,19 +217,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center'
-  },
-
-  itemIcon: {
-    width: 25,
-    height: 25,
-    borderRadius: 25,
-    alignSelf: 'center',
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-
-  itemIconText: {
-    color: 'white'
   },
 
   itemBox: {
@@ -271,5 +265,10 @@ const styles = StyleSheet.create({
 
   completeText: {
     color: 'white'
+  },
+
+  subline: {
+    fontSize: 12,
+    color: '#666'
   }
 })

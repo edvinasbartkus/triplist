@@ -20,6 +20,10 @@ export const findById = (id) => {
   return DB.lists.findById(id)
 }
 
+export const deleteList = (id) => {
+  return DB.lists.removeById(id)
+}
+
 /*
 
 {
