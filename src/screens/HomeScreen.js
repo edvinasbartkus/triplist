@@ -3,6 +3,7 @@ import {View, Text, SafeAreaView, TouchableOpacity, StyleSheet} from 'react-nati
 import {Navigation} from 'react-native-navigation'
 
 import {getLists} from './../utils/db'
+import {getColor} from './../utils/consts'
 
 export default class HomeScreen extends Component {
   static options(passProps) {
@@ -76,14 +77,15 @@ export default class HomeScreen extends Component {
     })
   }
 
-  renderList (list) {
+  renderList (list, index) {
     return (
       <TouchableOpacity
         key={list.name}
         style={styles.card}
         onPress={() => this.onPress(list)}>
-        <View style={styles.innerCard}>
-          <Text>{list.name}</Text>
+        <View style={[styles.innerCard, {backgroundColor: getColor(index)}]}>
+          <Text style={styles.text}>{list.name}</Text>
+          <Text style={styles.subline}>{list.items.length} destinations</Text>
         </View>
       </TouchableOpacity>
     )
@@ -94,7 +96,7 @@ export default class HomeScreen extends Component {
     return (
       <SafeAreaView>
         <View style={styles.cardContainer}>
-          {lists.map(list => this.renderList(list))}
+          {lists.map((list, index) => this.renderList(list, index))}
         </View>
       </SafeAreaView>
     )
@@ -105,7 +107,8 @@ const styles = StyleSheet.create({
   cardContainer: {
     flex: 1,
     flexDirection: 'row',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
+    marginTop: 5
   },
   card: {
     width: '50%',
@@ -120,5 +123,14 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: '#CCC',
     justifyContent: 'flex-end'
+  },
+
+  text: {
+    color: 'white'
+  },
+
+  subline: {
+    fontSize: 12,
+    color: '#F5F5F5'
   }
 })
