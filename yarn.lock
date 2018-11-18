@@ -4672,6 +4672,11 @@ react-native-store@^0.4.1:
   resolved "https://registry.yarnpkg.com/react-native-store/-/react-native-store-0.4.1.tgz#dc0c61021b9b033ae3c06660ec1985771aa4300c"
   integrity sha1-3AxhAhubAzrjwGZg7BmFdxqkMAw=
 
+react-native-swipe-list-view@^1.3.1:
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/react-native-swipe-list-view/-/react-native-swipe-list-view-1.3.1.tgz#737b6d5c3a8f344b3edf8f46c18d1617d0bc805c"
+  integrity sha512-oi/RMEMPvW9jmod2z0cIt6ZGZ6siMIhGlfaik8vBI9zvXSWZvt/ZKsBgFRbRqiu7Ijee2TT8GLoMhvAk7m7yzg==
+
 react-native@0.57.5:
   version "0.57.5"
   resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.57.5.tgz#f1dbcbf1f889845fba954f3e0d47e61cf89d41d9"
