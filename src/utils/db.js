@@ -16,6 +16,10 @@ export const updateList = (list, _id) => {
   return DB.lists.updateById(list, _id)
 }
 
+export const findById = (id) => {
+  return DB.lists.findById(id)
+}
+
 /*
 
 {

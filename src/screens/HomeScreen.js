@@ -42,7 +42,15 @@ export default class HomeScreen extends Component {
     }
   }
 
+  async componentDidAppear () {
+    this.load()
+  }
+
   componentWillMount () {
+    this.load()
+  }
+
+  load() {
     getLists().then(lists => this.setState({lists: lists || []}))
   }
 
