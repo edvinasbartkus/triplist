@@ -12,8 +12,9 @@ export const saveList = (list) => {
   return DB.lists.add(list)
 }
 
-export const updateList = (list, _id) => {
-  return DB.lists.updateById(list, _id)
+export const updateList = (list, id) => {
+  const {_id, ...nList} = list
+  return DB.lists.updateById(nList, id)
 }
 
 export const findById = (id) => {
