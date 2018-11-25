@@ -9,6 +9,8 @@ import Map from '../components/Map'
 import Circle from '../components/Circle'
 import SortableListView from 'react-native-sortable-listview'
 import SwipeableRow from 'react-native/Libraries/Experimental/SwipeableRow/SwipeableRow'
+import {Subscribe} from 'unstated'
+import ListsContainer from '../containers/ListsContainer'
 
 export default class ShowScreen extends Component {
   static options(passProps) {
@@ -32,25 +34,12 @@ export default class ShowScreen extends Component {
 
   constructor (props) {
     super(props)
-    this.state = {
-      list: props.list
-    }
-
     Navigation.events().bindComponent(this)
   }
 
   async componentDidAppear () {
-    await this.load()
-
     if (this.map) {
       this.map.fitToElements()
-    }
-  }
-
-  async load () {
-    const list = await findById(this.state.list._id)
-    if (list) {
-      this.setState({list})
     }
   }
 
@@ -60,104 +49,78 @@ export default class ShowScreen extends Component {
         component: {
           name: 'todotrip.AddItem',
           passProps: {
-            list: this.state.list
+            listId: this.props.listId
           }
         }
       })
     }
   }
 
-  changeMode (item) {
+  changeMode (container, item) {
     ActionSheetIOS.showActionSheetWithOptions({
       options: ['Cancel', 'Transit', 'Bicycle', 'Driving', 'Walking'],
       cancelButtonIndex: 0,
     }, async (buttonIndex) => {
-      let newMode
-      switch (buttonIndex) {
-        case 1: newMode = 'transit'; break;
-        case 2: newMode = 'bicycling'; break;
-        case 3: newMode = 'driving'; break;
-        case 4: newMode = 'walking'; break;
-        default: newMode = item.mode; break;
-      }
-
-      const list = this.state.list
-      const items = list.items.map(it => {
-        return {...it, mode: it.name === item.name ? newMode : it.mode}
-      })
-
-      const newList = {...list, items}
-      this.setState({list: newList})
-      await updateList(newList, list._id)
+      container.updateItem(this.props.listId, {...item, mode: this.mode(buttonIndex) || item.mode})
     });
   }
 
-  async update (list) {
-    this.setState({list})
-    await updateList(list, list._id)
+  mode (buttonIndex) {
+    switch (buttonIndex) {
+      case 1: return 'transit'
+      case 2: return 'bicycling'
+      case 3: return 'driving'
+      case 4: return 'walking'
+      default: null
+    }
   }
 
-  async onComplete (item) {
-    const list = this.state.list
-    const items = list.items.map(it => {
-      return {...it, completed: it.id === item.id ? !it.completed : it.completed}
-    })
-
-    this.update({...list, items})
+  async onComplete (container, item) {
+    container.updateItem(this.props.listId, {...item, completed: !item.completed})
   }
 
-  async onDelete (item) {
-    const list = this.state.list
-    const items = list.items.filter(it => it.id !== item.id)
-    this.update({...list, items})
+  async onDelete (container, item) {
+    container.deleteItem(this.props.listId, item.id)
   }
 
   _headerComponent = () => <Map
     ref={map => { this.map = map }}
-    reload={() => this.load()}
-    list={this.state.list}
+    listId={this.props.listId}
   />
 
   render () {
-    const {list} = this.state
-
-    const data = {}
-    const order = []
-
-    const items = (list.items || {}) || []
-    for (const item of items) {
-      data[item.id] = item
-      order.push(item.id)
-    }
-
+    const {listId} = this.props
     return (
-      <SortableListView
-          contentInset={{top: -50}}
-          renderHeader={this._headerComponent}
-          style={{flex: 1, marginBottom: 0}}
-          data={data}
-          order={Object.keys(data)}
-          onRowMoved={async e => {
-            const {list} = this.state
-            const items = [...list.items]
-            items.splice(e.to, 0, items.splice(e.from, 1)[0])
-            const newList = {...list, items}
-            this.setState({list: newList})
-            this.forceUpdate()
-            await updateList(newList, list._id)
-          }}
-          renderRow={(item, sectionId, rowId) => {
-            const index = order.indexOf(rowId)
-            return (
-              <Item 
-                changeMode={item => this.changeMode(item)}
-                onComplete={item => this.onComplete(item)}
-                onDelete={item => this.onDelete(item)}
-                {...{item, index}}
-              />
-            )
-          }}
-      />
+      <Subscribe to={[ListsContainer]}>
+        {lists =>
+          <SortableListView
+              order={lists.order(listId)}
+              data={lists.set(listId)}
+              contentInset={{top: -50}}
+              renderHeader={this._headerComponent}
+              style={styles.list}
+              onRowMoved={async e => {
+                const list = lists.getList(listId)
+                const items = [...list.items]
+                items.splice(e.to, 0, items.splice(e.from, 1)[0])
+                const newList = {...list, items: items}
+                lists.updateList(newList)
+              }}
+              renderRow={(item, sectionId, rowId) => {
+                const order = lists.order(this.props.listId)
+                const index = order.indexOf(rowId)
+                return (
+                  <Item 
+                    changeMode={item => this.changeMode(lists, item)}
+                    onComplete={item => this.onComplete(lists, item)}
+                    onDelete={item => this.onDelete(lists, item)}
+                    {...{item, index}}
+                  />
+                )
+              }}
+          />
+        }
+      </Subscribe>
     )
   }
 }
@@ -214,6 +177,11 @@ const styles = StyleSheet.create({
 
   item: {
     padding: 10
+  },
+
+  list: {
+    flex: 1,
+    marginBottom: 0
   },
 
   itemContainer: {

@@ -3,6 +3,8 @@ import {View, Text, NativeModules, StyleSheet, Button, FlatList} from 'react-nat
 import {Navigation} from 'react-native-navigation'
 import {updateList} from './../utils/db'
 import uuid from 'uuid'
+import { Subscribe } from 'unstated';
+import ListsContainer from '../containers/ListsContainer';
 
 export default class AddItemScreen extends Component {
   static options(passProps) {
@@ -59,16 +61,17 @@ export default class AddItemScreen extends Component {
     }
   }
 
-  async onPress (location) {
-    const {list} = this.props
-    list.items.push({ ...location, id: uuid(), mode: 'walking', completed: false})
-    // list.items = [ location, ...list.items ]
-
-    await updateList(list, list._id)
+  async onPress (container, location) {
+    await container.saveItem(this.props.listId, {
+      ...location,
+      id: uuid(),
+      mode: 'walking',
+      completed: false
+    })
     Navigation.pop(this.props.componentId)
   }
 
-  renderResult (location) {
+  renderResult (container, location) {
     /*
       {
         location: {
@@ -89,7 +92,7 @@ export default class AddItemScreen extends Component {
         <View style={styles.buttonContainer}>
           <Button
             title='Add'
-            onPress={() => this.onPress(location)}
+            onPress={() => this.onPress(container, location)}
           />
         </View>
       </View>
@@ -99,13 +102,17 @@ export default class AddItemScreen extends Component {
   render () {
     const {results, isFocused} = this.state
     return (
-      <FlatList
-        data={results}
-        keyExtractor={(item, index) => item.name}
-        renderItem={({item}) => this.renderResult(item)}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
-        ListFooterComponent={() => <View style={styles.separator} />}
-      />
+      <Subscribe to={[ListsContainer]}>
+        {lists =>
+          <FlatList
+            data={results}
+            keyExtractor={(item, index) => item.name}
+            renderItem={({item}) => this.renderResult(lists, item)}
+            ItemSeparatorComponent={() => <View style={styles.separator} />}
+            ListFooterComponent={() => <View style={styles.separator} />}
+          />
+        }
+      </Subscribe>
     )
   }
 }

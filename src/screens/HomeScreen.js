@@ -2,14 +2,15 @@ import React, {Component} from 'react'
 import {View, Text, ActionSheetIOS, SafeAreaView, TouchableOpacity, StyleSheet, Image} from 'react-native'
 import {Navigation} from 'react-native-navigation'
 
-import {getLists, deleteList} from './../utils/db'
-import {getColor} from './../utils/consts'
 import uuid from 'uuid'
+import {getColor} from './../utils/consts'
+import { Subscribe } from 'unstated';
+import ListsContainer from '../containers/ListsContainer';
 
 const DOTS_IMAGE = require('./../assets/oval.png')
 
 const jsonLists = [
-  {name: 'Vilnius', items: [
+  {name: 'Vilnius', public: true, items: [
     {
       id: uuid(),
       title: 'Gediminas Castle Tower',
@@ -118,10 +119,6 @@ export default class HomeScreen extends Component {
 
   constructor (props) {
     super(props)
-    this.state = {
-      lists: []
-    }
-
     Navigation.events().bindComponent(this)
   }
 
@@ -139,24 +136,12 @@ export default class HomeScreen extends Component {
     })
   }
 
-  async componentDidAppear () {
-    this.load()
-  }
-
-  componentWillMount () {
-    this.load()
-  }
-
-  load() {
-    getLists().then(lists => this.setState({lists: lists || []}))
-  }
-
   onPress (list) {
     Navigation.push(this.props.componentId, {
       component: {
         name: 'todotrip.Show',
         passProps: {
-          list
+          listId: list._id
         },
         options: {
           topBar: {
@@ -173,29 +158,30 @@ export default class HomeScreen extends Component {
     })
   }
 
-  onActions (list) {
+  onActions (container, list) {
     ActionSheetIOS.showActionSheetWithOptions({
       options: ['Cancel', 'Delete'],
       cancelButtonIndex: 0,
       destructiveButtonIndex: 1
     }, async (buttonIndex) => {
       if (buttonIndex === 1) {
-        await deleteList(list._id)
-        this.load()
+        container.deleteList(list._id)
       }
     });
   }
 
-  renderList (list, index) {
+  renderList (container, list, index) {
     return (
       <TouchableOpacity
         key={list.name}
         style={styles.card}
         onPress={() => this.onPress(list)}>
         <View style={[styles.innerCard, {backgroundColor: getColor(index)}]}>
-          <TouchableOpacity style={styles.image} onPress={() => this.onActions(list)}>
-            <Image source={DOTS_IMAGE} width={17} height={17} />
-          </TouchableOpacity>
+          {!list.public ?
+            <TouchableOpacity style={styles.image} onPress={() => this.onActions(container, list)}>
+              <Image source={DOTS_IMAGE} width={17} height={17} />
+            </TouchableOpacity>
+            : null}
           <View>
             <Text style={styles.text}>{list.name}</Text>
             <Text style={styles.subline}>{list.items.length} destinations</Text>
@@ -206,19 +192,22 @@ export default class HomeScreen extends Component {
   }
 
   render () {
-    const {lists} = this.state
     return (
-      <SafeAreaView>
-        <View style={{flexBasis: 10, flexDirection: 'column'}}>
-          <View style={[styles.cardContainer, {flex: 2}]}>
-            <Text style={styles.h1}>Your lists</Text>
-            {lists.map((list, index) => this.renderList(list, index))}
-            {lists.length === 0 ? <NewList onPress={() => this.newList()} /> : null}
-            <Text style={styles.h1}>Inspiration</Text>
-            {jsonLists.map((list, index) => this.renderList(list, index))}
-          </View>
-        </View>
-      </SafeAreaView>
+      <Subscribe to={[ListsContainer]}>
+        {container =>
+          <SafeAreaView>
+            <View style={{flexBasis: 10, flexDirection: 'column'}}>
+              <View style={[styles.cardContainer, {flex: 2}]}>
+                <Text style={styles.h1}>Your lists</Text>
+                {container.state.lists.map((list, index) => this.renderList(container, list, index))}
+                {container.state.lists.length === 0 ? <NewList onPress={() => this.newList()} /> : null}
+                <Text style={styles.h1}>Inspiration</Text>
+                {jsonLists.map((list, index) => this.renderList(container, list, index))}
+              </View>
+            </View>
+          </SafeAreaView>
+        }
+      </Subscribe>
     )
   }
 }
