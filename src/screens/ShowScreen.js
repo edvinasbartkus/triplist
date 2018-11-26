@@ -107,14 +107,12 @@ export default class ShowScreen extends Component {
                 lists.updateList(newList)
               }}
               renderRow={(item, sectionId, rowId) => {
-                const order = lists.order(this.props.listId)
-                const index = order.indexOf(rowId)
                 return (
                   <Item 
                     changeMode={item => this.changeMode(lists, item)}
                     onComplete={item => this.onComplete(lists, item)}
                     onDelete={item => this.onDelete(lists, item)}
-                    {...{item, index}}
+                    {...{item}}
                   />
                 )
               }}
@@ -127,7 +125,7 @@ export default class ShowScreen extends Component {
 
 class Item extends React.Component {
   render () {
-    const {index, item} = this.props
+    const {item} = this.props
 
     return (
       <SwipeableRow
@@ -149,14 +147,14 @@ class Item extends React.Component {
             <View style={styles.itemIconContainer}>
               <Circle
                 onPress={() => this.props.onComplete(item)}
-                text={index + 1}
+                text={item.index}
                 color={getColor(0)}
                 completed={item.completed} />
             </View>
             <View style={styles.textsContainer}>
               <Text style={styles.itemText}>{item.name}</Text>
               <View style={styles.actionsContainer}>
-                {index > 0 ?
+                {item.index > 1 ?
                   <TouchableOpacity onPress={() => this.props.changeMode(item)}>
                     <Text style={styles.subline}>{item.mode}</Text>
                   </TouchableOpacity>
