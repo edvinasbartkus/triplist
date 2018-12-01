@@ -8,6 +8,8 @@ import Circle from './Circle'
 import uuid from 'uuid'
 import { Subscribe } from 'unstated';
 import ListsContainer from '../containers/ListsContainer';
+import DirectionsContainer from '../containers/DirectionsContainer';
+import Directions from './Directions'
 
 export default class Map extends Component {
   constructor (props) {
@@ -32,26 +34,30 @@ export default class Map extends Component {
     )
   }
 
-  renderDirections (items) {
-    const results = []
+  mapDirections (container, items) {
     let start = items[0]
-    for (const item of items.slice(1)) {
-      results.push(
-        <MapViewDirections
-          key={`${start.name}_${item.name}_${item.mode}`}
-          origin={start.location}
-          destination={item.location}
-          apikey={KEY}
-          mode={item.mode || 'walking'}
+    const result = []
+    for (let item of items.slice(1)) {
+      const route = container.get(item.mode, start.location, item.location)
+      if (route) {
+        result.push(<Directions
+          {...route}
           strokeWidth={3}
           strokeColor={getColor(0)}
-        />
-      )
+        />)
+      }
 
       start = item
     }
 
-    return results
+    return result
+  }
+
+  renderDirections (items) {
+    let start = items[0]
+    return <Subscribe to={[DirectionsContainer]}>
+      {directions => this.mapDirections(directions, items)}
+    </Subscribe>
   }
 
   async onAdd (poi) {

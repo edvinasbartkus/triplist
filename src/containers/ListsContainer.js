@@ -50,12 +50,13 @@ export default class ListsContainer extends Container {
   }
 
   set (listId) {
-    const result =  this.getItems(listId).reduce((set, item) => {
+    const [set] =  this.getItems(listId).reduce(([set, previous], item) => {
       set[item.id] = item
-      return set
-    }, {})
+      set[item.id].previous = previous
+      return [set, item]
+    }, [{}, null])
 
-    return result
+    return set
   }
 
   // Items

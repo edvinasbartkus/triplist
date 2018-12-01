@@ -1,9 +1,7 @@
 import React, {Component} from 'react'
-import {View, ActionSheetIOS, ScrollView, TouchableOpacity, Text, StyleSheet, TouchableHighlight} from 'react-native'
+import {View, ActionSheetIOS, TouchableOpacity, Text, StyleSheet, TouchableHighlight} from 'react-native'
 import {Navigation} from 'react-native-navigation'
-import DraggableFlatList from 'react-native-draggable-flatlist'
-import {updateList, findById} from './../utils/db'
-import {SwipeRow} from 'react-native-swipe-list-view'
+import DirectionsContainer from '../containers/DirectionsContainer'
 import {getColor} from '../utils/consts'
 import Map from '../components/Map'
 import Circle from '../components/Circle'
@@ -124,6 +122,34 @@ export default class ShowScreen extends Component {
 }
 
 class Item extends React.Component {
+  renderETA (directions, item) {
+    if (item.previous) {
+      const route = directions.get(item.mode, item.previous.location, item.location)
+      if (route) {
+        let {distance, duration} = route
+        distance = distance > 10 ? Math.round(distance) : Math.round(distance * 10) / 10
+        duration = Math.round(duration)
+        return (
+          <TouchableOpacity onPress={() => this.props.changeMode(item)}>
+            <Text style={styles.subline}>
+              {distance}km of {item.mode} in {duration} {duration > 1 ? 'minutes' : 'minute'}
+            </Text>
+          </TouchableOpacity>
+        )
+      } else {
+        return (
+          <TouchableOpacity onPress={() => this.props.changeMode(item)}>
+            <Text style={styles.subline}>{item.mode}</Text>
+          </TouchableOpacity>
+        )
+      }
+    } else {
+      return (
+        <Text style={styles.subline}>Starting point</Text>
+      )
+    }
+  }
+
   render () {
     const {item} = this.props
 
@@ -154,11 +180,7 @@ class Item extends React.Component {
             <View style={styles.textsContainer}>
               <Text style={styles.itemText}>{item.name}</Text>
               <View style={styles.actionsContainer}>
-                {item.index > 1 ?
-                  <TouchableOpacity onPress={() => this.props.changeMode(item)}>
-                    <Text style={styles.subline}>{item.mode}</Text>
-                  </TouchableOpacity>
-                  : <Text style={styles.subline}>Starting point</Text>}
+                <Subscribe to={[DirectionsContainer]}>{directions => this.renderETA(directions, item)}</Subscribe>
               </View>
             </View>
           </View>
