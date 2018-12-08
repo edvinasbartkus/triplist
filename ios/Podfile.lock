@@ -17,6 +17,8 @@ PODS:
   - react-native-autocomplete/RCTAutoComplete (0.4.0):
     - React
     - react-native-autocomplete/MLPAutoCompleteTextField
+  - react-native-blur (0.8.0):
+    - React
   - react-native-maps (0.22.1):
     - React
   - React/Core (0.57.5):
@@ -65,6 +67,7 @@ DEPENDENCIES:
   - Folly (from `../node_modules/react-native/third-party-podspecs/Folly.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - react-native-autocomplete (from `../node_modules/react-native-autocomplete/react-native-autocomplete.podspec`)
+  - react-native-blur (from `../node_modules/react-native-blur`)
   - react-native-maps (from `../node_modules/react-native-maps`)
   - React/Core (from `../node_modules/react-native`)
   - React/CxxBridge (from `../node_modules/react-native`)
@@ -93,6 +96,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native"
   react-native-autocomplete:
     :path: "../node_modules/react-native-autocomplete/react-native-autocomplete.podspec"
+  react-native-blur:
+    :path: "../node_modules/react-native-blur"
   react-native-maps:
     :path: "../node_modules/react-native-maps"
   ReactNativeNavigation:
@@ -107,10 +112,11 @@ SPEC CHECKSUMS:
   glog: e8acf0ebbf99759d3ff18c86c292a5898282dcde
   React: 1fe0eb13d90b625d94c3b117c274dcfd2e760e11
   react-native-autocomplete: 937add82d91b0b0e65dc451cef9f54efa92944ef
+  react-native-blur: c35c1f6c2c76db7108bde7ed343bd2b01d64e0c0
   react-native-maps: 066c2afcc89e18726377bcc685315f989ca22449
   ReactNativeNavigation: b6a5844caf84a5f69ca6081b0caffd3d75194aa5
   yoga: b1ce48b6cf950b98deae82838f5173ea7cf89e85
 
-PODFILE CHECKSUM: 6a6dcbb07dfe873ff1747484057f69f146846bcc
+PODFILE CHECKSUM: fc47f5d027b2159e17870c31f19cdfcf4b83b54a
 
 COCOAPODS: 1.5.3

@@ -45,6 +45,10 @@ export default class ListsContainer extends Container {
     return this.getList(listId).items || []
   }
 
+  getItem (listId, itemId) {
+    return this.getItems(listId).find(it => it.id === itemId)
+  }
+
   order (listId) {
     return this.getItems(listId).map(it => it.id)
   }

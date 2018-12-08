@@ -23,6 +23,9 @@ DerivedData
 project.xcworkspace
 ios/Pods
 
+# Secrets
+src/utils/maps.js
+
 # Android/IntelliJ
 #
 build/
@@ -55,3 +58,7 @@ buck-out/
 
 # Bundle artifact
 *.jsbundle
+
+# Haul
+#
+haul-debug.log

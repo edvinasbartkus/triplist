@@ -9,6 +9,16 @@ import SortableListView from 'react-native-sortable-listview'
 import SwipeableRow from 'react-native/Libraries/Experimental/SwipeableRow/SwipeableRow'
 import {Subscribe} from 'unstated'
 import ListsContainer from '../containers/ListsContainer'
+import { ActionSheetCustom as ActionSheet } from 'react-native-custom-actionsheet'
+import ModeButtons from '../components/ModeButtons'
+
+ACTION_SHEET_OPTIONS = [
+  'Cancel',
+  {
+    component: <ModeButtons />,
+    height: 160
+  }
+]
 
 export default class ShowScreen extends Component {
   static options(passProps) {
@@ -54,14 +64,14 @@ export default class ShowScreen extends Component {
     }
   }
 
-  changeMode (container, item) {
-    ActionSheetIOS.showActionSheetWithOptions({
-      options: ['Cancel', 'Transit', 'Bicycle', 'Driving', 'Walking'],
-      cancelButtonIndex: 0,
-    }, async (buttonIndex) => {
-      container.updateItem(this.props.listId, {...item, mode: this.mode(buttonIndex) || item.mode})
-    });
-  }
+  // changeMode (container, item) {
+  //   ActionSheetIOS.showActionSheetWithOptions({
+  //     options: ['Cancel', 'Transit', 'Bicycle', 'Driving', 'Walking'],
+  //     cancelButtonIndex: 0,
+  //   }, async (buttonIndex) => {
+  //     container.updateItem(this.props.listId, {...item, mode: this.mode(buttonIndex) || item.mode})
+  //   });
+  // }
 
   mode (buttonIndex) {
     switch (buttonIndex) {
@@ -81,40 +91,76 @@ export default class ShowScreen extends Component {
     container.deleteItem(this.props.listId, item.id)
   }
 
+  handlePress = index => {}
+
   _headerComponent = () => <Map
     ref={map => { this.map = map }}
     listId={this.props.listId}
   />
+
+  _getActionSheetRef = ref => (this.actionSheet = ref)
+
+  _showActionSheet = (item) => {
+    Navigation.showOverlay({
+      component: {
+        name: 'todotrip.Control',
+        passProps: {
+          item,
+          listId: this.props.listId
+        },
+        options: {
+          layout: {
+            backgroundColor: '#FFFFFF00',
+          },
+          topBar: {
+            visible: false
+          },
+          overlay: {
+            interceptTouchOutside: true
+          }
+        }
+      }
+    })
+  }
 
   render () {
     const {listId} = this.props
     return (
       <Subscribe to={[ListsContainer]}>
         {lists =>
-          <SortableListView
-              order={lists.order(listId)}
-              data={lists.set(listId)}
-              contentInset={{top: -50}}
-              renderHeader={this._headerComponent}
-              style={styles.list}
-              onRowMoved={async e => {
-                const list = lists.getList(listId)
-                const items = [...list.items]
-                items.splice(e.to, 0, items.splice(e.from, 1)[0])
-                const newList = {...list, items: items}
-                lists.updateList(newList)
-              }}
-              renderRow={(item, sectionId, rowId) => {
-                return (
-                  <Item 
-                    changeMode={item => this.changeMode(lists, item)}
-                    onComplete={item => this.onComplete(lists, item)}
-                    onDelete={item => this.onDelete(lists, item)}
-                    {...{item}}
-                  />
-                )
-              }}
-          />
+          <>
+            <SortableListView
+                order={lists.order(listId)}
+                data={lists.set(listId)}
+                contentInset={{top: -50}}
+                renderHeader={this._headerComponent}
+                style={styles.list}
+                onRowMoved={async e => {
+                  const list = lists.getList(listId)
+                  const items = [...list.items]
+                  items.splice(e.to, 0, items.splice(e.from, 1)[0])
+                  const newList = {...list, items: items}
+                  lists.updateList(newList)
+                }}
+                renderRow={(item, sectionId, rowId) => {
+                  return (
+                    <Item 
+                      changeMode={item => this._showActionSheet(item)}
+                      onComplete={item => this.onComplete(lists, item)}
+                      onDelete={item => this.onDelete(lists, item)}
+                      {...{item}}
+                    />
+                  )
+                }}
+            />
+            <ActionSheet
+              ref={this._getActionSheetRef}
+              title={'How we are going to get there?'}
+              options={ACTION_SHEET_OPTIONS}
+              cancelButtonIndex={0}
+              onPress={this.handlePress}
+            />
+          </>
         }
       </Subscribe>
     )
