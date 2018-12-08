@@ -24,7 +24,7 @@ project.xcworkspace
 ios/Pods
 
 # Secrets
-src/utils/maps.js
+.env
 
 # Android/IntelliJ
 #
