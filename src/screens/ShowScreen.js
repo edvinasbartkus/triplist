@@ -202,7 +202,7 @@ class Item extends React.Component {
     return (
       <SwipeableRow
         isOpen={false}
-        shouldBounceOnMount={true}
+        shouldBounceOnMount={false}
         maxSwipeDistance={75}
         preventSwipeRight={true}
         slideoutView={

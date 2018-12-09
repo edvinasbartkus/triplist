@@ -11,7 +11,8 @@ target 'todotrip' do
     'RCTWebSocket',
     'RCTAnimation',
     'RCTImage',
-    'RCTActionSheet'
+    'RCTActionSheet',
+    'RCTLinkingIOS'
   ]
 
   pod 'yoga', :path => '../node_modules/react-native/ReactCommon/yoga'

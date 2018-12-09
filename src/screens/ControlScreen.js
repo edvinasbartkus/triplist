@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {View, StyleSheet, TouchableWithoutFeedback} from 'react-native'
-import {BlurView} from 'react-native-blur'
+import {BlurView, VibrancyView} from 'react-native-blur'
 import ModeButtons from '../components/ModeButtons';
 import {Navigation} from 'react-native-navigation'
 import SlideAnimation from '../components/SlideAnimation';
@@ -28,16 +28,7 @@ export default class ControlScreen extends Component {
           <View style={styles.innerContainer}>
             <SlideAnimation style={styles.actionsContainer}>
               <Subscribe to={[ListsContainer]}>
-              {
-                lists => {
-                  const i = lists.getItem(listId, item.id)
-                  if (!i) {
-                    return null
-                  } else {
-                    return <ModeButtons item={item} onUpdate={value => this.onUpdate(lists, value)} />
-                  }
-                }
-              }
+              {lists => <ModeButtons item={lists.getItem(listId, item.id)} onUpdate={value => this.onUpdate(lists, value)} />}
               </Subscribe>
             </SlideAnimation>
           </View>
