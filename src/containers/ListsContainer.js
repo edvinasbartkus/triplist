@@ -8,7 +8,7 @@ export default class ListsContainer extends Container {
 
   constructor (props) {
     super(props)
-    db.getLists().then(lists => this.setState({lists}))
+    db.getLists().then(lists => this.setState({lists: lists || []}))
   }
 
   // Lists
