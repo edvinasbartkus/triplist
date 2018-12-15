@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {View, Text, ActionSheetIOS, SafeAreaView, TouchableOpacity, StyleSheet, Image} from 'react-native'
+import {View, Text, ActionSheetIOS, SafeAreaView, TouchableOpacity, StyleSheet, Image, ScrollView} from 'react-native'
 import {Navigation} from 'react-native-navigation'
 
 import uuid from 'uuid'
@@ -131,7 +131,17 @@ export default class HomeScreen extends Component {
   newList () {
     Navigation.push(this.props.componentId, {
       component: {
-        name: 'todotrip.AddList'
+        name: 'todotrip.AddList',
+        options: {
+          topBar: {
+            title: {
+              text: 'New list'
+            },
+            backButton: {
+              title: 'Back'
+            }
+          },
+        }
       }
     })
   }
@@ -170,6 +180,13 @@ export default class HomeScreen extends Component {
     });
   }
 
+  renderDone (items) {
+    const length = items.filter(it => it.completed).length
+    if (length > 0) {
+      return `${Math.round(length / items.length * 100)}% completed.`
+    }
+  }
+
   renderList (container, list, index) {
     return (
       <TouchableOpacity
@@ -183,8 +200,8 @@ export default class HomeScreen extends Component {
             </TouchableOpacity>
             : null}
           <View>
-            <Text style={styles.text}>{list.name}</Text>
-            <Text style={styles.subline}>{list.items.length} destinations</Text>
+            <Text numberOfLines={2} style={styles.text}>{list.name}</Text>
+            <Text style={styles.subline}>{list.items.length} places. {this.renderDone(list.items)}</Text>
           </View>
         </View>
       </TouchableOpacity>
@@ -195,17 +212,15 @@ export default class HomeScreen extends Component {
     return (
       <Subscribe to={[ListsContainer]}>
         {container =>
-          <SafeAreaView>
-            <View style={{flexBasis: 10, flexDirection: 'column'}}>
-              <View style={[styles.cardContainer, {flex: 2}]}>
-                <Text style={styles.h1}>Your lists</Text>
-                {container.state.lists.map((list, index) => this.renderList(container, list, index))}
-                {container.state.lists.length === 0 ? <NewList onPress={() => this.newList()} /> : null}
-                <Text style={styles.h1}>Inspiration</Text>
-                {jsonLists.map((list, index) => this.renderList(container, list, index))}
-              </View>
+          <ScrollView style={styles.container}>
+            <View style={[styles.cardContainer, {flex: 2}]}>
+              <Text style={styles.h1}>Your lists</Text>
+              {container.state.lists.map((list, index) => this.renderList(container, list, index))}
+              {container.state.lists.length === 0 ? <NewList onPress={() => this.newList()} /> : null}
+              <Text style={styles.h1}>Inspiration</Text>
+              {jsonLists.map((list, index) => this.renderList(container, list, index))}
             </View>
-          </SafeAreaView>
+          </ScrollView>
         }
       </Subscribe>
     )
@@ -225,24 +240,28 @@ class NewList extends Component {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flexBasis: 10,
+    flexDirection: 'column',
+    padding: 5
+  },
+
   cardContainer: {
     flex: 1,
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginTop: 5
+    flexWrap: 'wrap'
   },
   card: {
     width: '50%',
-    height: 115,
-    paddingLeft: 10,
-    paddingRight: 10,
-    paddingTop: 10
+    height: 130,
+    paddingLeft: 5,
+    paddingRight: 5
   },
 
   innerCard: {
-    height: 100,
+    height: 120,
     borderRadius: 5,
-    padding: 10,
+    padding: 15,
     backgroundColor: '#CCC',
     justifyContent: 'space-between'
   },
@@ -254,7 +273,8 @@ const styles = StyleSheet.create({
 
   subline: {
     fontSize: 12,
-    color: '#F5F5F5'
+    color: '#F5F5F5',
+    marginTop: 5
   },
 
   image: {
@@ -284,9 +304,9 @@ const styles = StyleSheet.create({
 
   h1: {
     width: '100%',
-    paddingLeft: 10,
+    paddingLeft: 5,
     paddingTop: 30,
-    height: 60,
+    height: 65,
     fontSize: 24,
     fontWeight: '600'
   }
