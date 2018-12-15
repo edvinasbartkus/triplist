@@ -1,10 +1,11 @@
 import React, {Component} from 'react'
 import {View, TextInput, Button, StyleSheet} from 'react-native'
-import {saveList} from './../utils/db'
 import {Navigation} from 'react-native-navigation'
 
 import AutoComplete from 'react-native-autocomplete'
 import Countries from '../assets/countries.json'
+import {Subscribe} from 'unstated'
+import ListsContainer from '../containers/ListsContainer'
 
 export default class AddListScreen extends Component {
   constructor (props) {
@@ -18,9 +19,9 @@ export default class AddListScreen extends Component {
     this.onTyping = this.onTyping.bind(this)
   }
 
-  async onPress () {
+  async onPress (container) {
     const {name} = this.state
-    await saveList({name, items: []})
+    container.saveList({name, items: []})
     Navigation.pop(this.props.componentId)
   }
 
@@ -34,7 +35,8 @@ export default class AddListScreen extends Component {
 
   render () {
     return (
-      <View>
+      <Subscribe to={[ListsContainer]}>
+      {lists => <View>
         <TextInput
           value={this.state.name}
           onChangeText={name => this.setState({name})}
@@ -68,11 +70,12 @@ export default class AddListScreen extends Component {
           maximumNumberOfAutoCompleteRows={6}
         />
         <Button
-          onPress={() => this.onPress()}
+          onPress={() => this.onPress(lists)}
           title="Save"
           accessibilityLabel="Create a new list with your chosen name"
         />
-      </View>
+      </View>}
+      </Subscribe>
     )
   }
 }

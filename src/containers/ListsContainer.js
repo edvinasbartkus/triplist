@@ -17,7 +17,7 @@ export default class ListsContainer extends Container {
       lists: this.state.lists.concat(list)
     })
 
-    await saveList(list)
+    await db.saveList(list)
   }
 
   async updateList (list) {
