@@ -6488,11 +6488,6 @@ react-lifecycles-compat@^3.0.4:
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
-react-native-autocomplete@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/react-native-autocomplete/-/react-native-autocomplete-0.4.0.tgz#df786ca3e5efbd161e2bd87c39d4984f00dfc047"
-  integrity sha512-rDsPwbPai1DNDHTc+ECHBlEgKOZu7WisuFlokJJwjfyXcClAzBqBmvHDXWBBqWPZdFZeMS7OFB6G0cZ2ck1QRg==
-
 react-native-blur@^3.2.2:
   version "3.2.2"
   resolved "https://registry.yarnpkg.com/react-native-blur/-/react-native-blur-3.2.2.tgz#5bfb50638d148982c9560436554ed01d77d6d07d"

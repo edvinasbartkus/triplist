@@ -99,7 +99,7 @@ const jsonLists = [
 ]
 
 export default class HomeScreen extends Component {
-  static options(passProps) {
+  static options() {
     return {
       topBar: {
         title: {
@@ -215,10 +215,10 @@ export default class HomeScreen extends Component {
           <ScrollView style={styles.container}>
             <View style={[styles.cardContainer, {flex: 2}]}>
               <Text style={styles.h1}>Your lists</Text>
-              {container.state.lists.map((list, index) => this.renderList(container, list, index))}
-              {container.state.lists.length === 0 ? <NewList onPress={() => this.newList()} /> : null}
+              {container.getPrivateLists().map((list, index) => this.renderList(container, list, index))}
+              {container.getPrivateLists().length === 0 ? <NewList onPress={() => this.newList()} /> : null}
               <Text style={styles.h1}>Inspiration</Text>
-              {jsonLists.map((list, index) => this.renderList(container, list, index))}
+              {container.getPublicLists().map((list, index) => this.renderList(container, list, index))}
             </View>
           </ScrollView>
         }

@@ -130,6 +130,7 @@ export default class ShowScreen extends Component {
         {lists =>
           <>
             <SortableListView
+                automaticallyAdjustContentInsets={false}
                 order={lists.order(listId)}
                 data={lists.set(listId)}
                 contentInset={{top: -50}}

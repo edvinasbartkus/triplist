@@ -48,16 +48,7 @@ export default class AddItemScreen extends Component {
 
   search (text) {
     if (text) {
-      // Geocoder.from(text).then(json => this.setState({results: json.results || []}))
-
-      const region = {
-        latitude: 37.78825,
-        longitude: -122.4324,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421
-      }
-
-      NativeModules.RNLocalSearch.searchForLocations(text, region, (err, response) => this.setState({results: response}))
+      NativeModules.RNLocalSearch.searchForLocations(text, {}, (err, response) => this.setState({results: response}))
     }
   }
 

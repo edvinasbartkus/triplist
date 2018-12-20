@@ -1,14 +1,113 @@
 import {Container} from 'unstated'
+import uuid from 'uuid'
 import * as db from '../utils/db'
+
+const jsonLists = [
+  {name: 'Vilnius', public: true, items: [
+    {
+      id: uuid(),
+      index: 1,
+      title: 'Gediminas Castle Tower',
+      name: 'Gediminas Castle Tower',
+      completed: false,
+      readonly: true,
+      mode: 'walking',
+      location: {
+        latitude: 54.6866631,
+        longitude: 25.2884653
+      }
+    },
+    {
+      id: uuid(),
+      index: 2,
+      title: 'Vilnius Cathedral',
+      name: 'Vilnius Cathedral',
+      completed: false,
+      readonly: true,
+      mode: 'walking',
+      location: {
+        latitude: 54.6858517,
+        longitude: 25.2855455
+      }
+    },
+    {
+      id: uuid(),
+      index: 3,
+      title: 'City park',
+      name: 'City park',
+      completed: false,
+      readonly: true,
+      mode: 'walking',
+      location: {
+        latitude: 54.6874297,
+        longitude: 25.2791292
+      }
+    },
+    {
+      id: uuid(),
+      index: 4,
+      title: 'Vokiečių str.',
+      name: 'Vokiečių str.',
+      completed: false,
+      readonly: true,
+      mode: 'walking',
+      location: {
+        latitude: 54.6791502,
+        longitude: 25.2821801
+      }
+    },
+    {
+      id: uuid(),
+      index: 5,
+      title: 'Vilnius Townhall',
+      name: 'Vilnius Townhall',
+      completed: false,
+      readonly: true,
+      mode: 'walking',
+      location: {
+        latitude: 54.6781798,
+        longitude: 25.2847437
+      }
+    },
+    {
+      id: uuid(),
+      index: 6,
+      title: 'Bernardine Park',
+      name: 'Bernardine Park',
+      completed: false,
+      readonly: true,
+      mode: 'walking',
+      location: {
+        latitude: 54.6844001,
+        longitude: 25.2932583
+      }
+    },
+    {
+      id: uuid(),
+      index: 7,
+      title: 'Presidentail Palace',
+      name: 'Presidentail Palace',
+      completed: false,
+      readonly: true,
+      mode: 'walking',
+      location: {
+        latitude: 54.6831548,
+        longitude: 25.2838108
+      }
+    },
+  ]}
+]
 
 export default class ListsContainer extends Container {
   state = {
-    lists: []
+    lists: jsonLists
   }
 
   constructor (props) {
     super(props)
-    db.getLists().then(lists => this.setState({lists: lists || []}))
+    db.getLists().then(lists => {
+      this.setState({lists: this.state.lists.concat(lists || [])})
+    })
   }
 
   // Lists
@@ -39,6 +138,14 @@ export default class ListsContainer extends Container {
 
   getList (listId) {
     return this.state.lists.find(it => it._id === listId) || {}
+  }
+
+  getPublicLists () {
+    return this.state.lists.filter(it => it.public)
+  }
+
+  getPrivateLists () {
+    return this.state.lists.filter(it => !it.public)
   }
 
   getItems (listId) {
