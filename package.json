@@ -48,6 +48,12 @@
         "build": "xcodebuild -workspace ios/todotrip.xcworkspace -scheme todotrip -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build",
         "type": "ios.simulator",
         "name": "iPhone Xʀ"
+      },
+      "ios.sim.release": {
+        "binaryPath": "ios/build/Build/Products/Release-iphonesimulator/todotrip.app",
+        "build": "xcodebuild -workspace ios/todotrip.xcworkspace -scheme todotrip -configuration Release -sdk iphonesimulator -derivedDataPath ios/build",
+        "type": "ios.simulator",
+        "name": "iPhone Xʀ"
       }
     },
     "test-runner": "jest"
