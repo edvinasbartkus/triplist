@@ -230,7 +230,7 @@ export default class HomeScreen extends Component {
 class NewList extends Component {
   render () {
     return (
-      <TouchableOpacity onPress={() => this.props.onPress()} style={styles.newContainer}>
+      <TouchableOpacity testID='NewListButton' onPress={() => this.props.onPress()} style={styles.newContainer}>
         <View style={styles.newInnerContainer}>
           <Text style={styles.newContainerText}>Create new travel list</Text>
         </View>
