@@ -53,7 +53,7 @@
         "binaryPath": "ios/build/Build/Products/Release-iphonesimulator/todotrip.app",
         "build": "xcodebuild -workspace ios/todotrip.xcworkspace -scheme todotrip -configuration Release -sdk iphonesimulator -derivedDataPath ios/build",
         "type": "ios.simulator",
-        "name": "iPhone Xʀ"
+        "name": "iPhone 7"
       }
     },
     "test-runner": "jest"
