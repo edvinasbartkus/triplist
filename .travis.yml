@@ -31,6 +31,6 @@ install:
   - yarn
 
 script:
-  - detox build --configuration ios.sim.release > /dev/null 2>&1
+  - detox build --configuration ios.sim.release
   - detox clean-framework-cache && detox build-framework-cache
   - detox test --configuration ios.sim.release -l verbose --cleanup
