@@ -21,7 +21,6 @@ install:
   - export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
   - nvm install $NODE_VERSION
   - nvm use $NODE_VERSION
-  - cd ios/ && pod install && cd ..
   - brew install watchman
   - brew install yarn --without-node
   - brew tap wix/brew
@@ -29,6 +28,7 @@ install:
   - yarn global add react-native-cli
   - yarn global add detox-cli
   - yarn
+  - cd ios/ && pod install && cd ..
 
 script:
   - detox build --configuration ios.sim.release
