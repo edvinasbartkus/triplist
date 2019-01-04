@@ -39,7 +39,11 @@
     "react-test-renderer": "16.6.1"
   },
   "jest": {
-    "preset": "react-native"
+    "preset": "react-native",
+    "testPathIgnorePatterns": [
+      "/e2e/",
+      "node_modules"
+    ]
   },
   "detox": {
     "configurations": {
