@@ -4,7 +4,7 @@ node_js: 8.9.4
 matrix:
   include:
     - language: objective-c
-      osx_image: xcode10.1
+      osx_image: xcode9.4
       xcode_sdk: iphonesimulator11.0
 
 addons:
@@ -13,7 +13,8 @@ addons:
 env:
   global:
   - NODE_VERSION=stable
-
+  - CODE_SIGNING_REQUIRED=NO
+  
 install:
   - sudo launchctl limit maxfiles 2048 unlimited
   - sudo ulimit -n 10000
