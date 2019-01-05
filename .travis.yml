@@ -25,4 +25,5 @@ install:
 script:
   - detox build --configuration ios.sim.release > /dev/null
   - detox clean-framework-cache && detox build-framework-cache
+  - react-native start &
   - detox test --configuration ios.sim.release -l verbose --cleanup
