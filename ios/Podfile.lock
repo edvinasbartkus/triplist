@@ -51,7 +51,7 @@ PODS:
     - React/Core
     - React/fishhook
     - React/RCTBlob
-  - ReactNativeNavigation (2.0.2641):
+  - ReactNativeNavigation (2.5.0):
     - React
   - yoga (0.57.5.React)
 
@@ -104,7 +104,7 @@ SPEC CHECKSUMS:
   React: 1fe0eb13d90b625d94c3b117c274dcfd2e760e11
   react-native-blur: c35c1f6c2c76db7108bde7ed343bd2b01d64e0c0
   react-native-maps: 066c2afcc89e18726377bcc685315f989ca22449
-  ReactNativeNavigation: b6a5844caf84a5f69ca6081b0caffd3d75194aa5
+  ReactNativeNavigation: 3d5a2e15c25cb87a7d764d8aeac0428dffe2fa09
   yoga: b1ce48b6cf950b98deae82838f5173ea7cf89e85
 
 PODFILE CHECKSUM: 5c1d8d45dc9475cc881d623a6650b74415289700
