@@ -21,6 +21,7 @@ install:
   - yarn global add detox-cli
   - yarn
   - cd ios/ && pod install && cd ..
+  - echo GOOGLE_API_KEY=$GOOGLE_API_KEY > .env
 
 script:
   - detox build --configuration ios.sim.debug > /dev/null 2>&1
