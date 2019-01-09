@@ -1,18 +1,10 @@
-language: node_js
-node_js: 8.9.4
-
-matrix:
-  include:
-    - language: objective-c
-      osx_image: xcode9
-      xcode_sdk: iphonesimulator11.0
-
-addons:
-  artifacts: true
+language: objective-c
+osx_image: xcode9.4
 
 env:
   global:
   - NODE_VERSION=stable
+  - CODE_SIGNING_REQUIRED=NO
 
 install:
   - sudo launchctl limit maxfiles 2048 unlimited
@@ -21,7 +13,6 @@ install:
   - export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
   - nvm install $NODE_VERSION
   - nvm use $NODE_VERSION
-  - cd ios/ && pod install && cd ..
   - brew install watchman
   - brew install yarn --without-node
   - brew tap wix/brew
@@ -29,8 +20,11 @@ install:
   - yarn global add react-native-cli
   - yarn global add detox-cli
   - yarn
+  - cd ios/ && pod install && cd ..
+  - echo GOOGLE_API_KEY=$GOOGLE_API_KEY > .env
 
 script:
-  - detox build --configuration ios.sim.release
+  - detox build --configuration ios.sim.debug > /dev/null 2>&1
   - detox clean-framework-cache && detox build-framework-cache
-  - detox test --configuration ios.sim.release -l verbose --cleanup
+  - react-native start &
+  - detox test --configuration ios.sim.debug -l verbose --cleanup
