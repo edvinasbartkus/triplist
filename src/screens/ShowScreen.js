@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {StyleSheet} from 'react-native'
+import {StyleSheet, View, Text} from 'react-native'
 import {Navigation} from 'react-native-navigation'
 import Map from '../components/Map'
 import SortableListView from 'react-native-sortable-listview'
@@ -8,6 +8,7 @@ import ListsContainer from '../containers/ListsContainer'
 import { ActionSheetCustom as ActionSheet } from 'react-native-custom-actionsheet'
 import ModeButtons from '../components/ModeButtons'
 import Item from '../components/Item'
+import Total from '../components/Total'
 
 ACTION_SHEET_OPTIONS = [
   'Cancel',
@@ -95,6 +96,8 @@ export default class ShowScreen extends Component {
     listId={this.props.listId}
   />
 
+  _footerComponent = () => <Total listId={this.props.listId} />
+
   _getActionSheetRef = ref => (this.actionSheet = ref)
 
   _showActionSheet = (item) => {
@@ -132,6 +135,7 @@ export default class ShowScreen extends Component {
                 data={lists.set(listId)}
                 contentInset={{top: -50}}
                 renderHeader={this._headerComponent}
+                renderFooter={this._footerComponent}
                 style={styles.list}
                 onRowMoved={async e => {
                   const list = lists.getList(listId)
@@ -140,7 +144,7 @@ export default class ShowScreen extends Component {
                   const newList = {...list, items: items}
                   lists.updateList(newList)
                 }}
-                renderRow={(item, sectionId, rowId) => {
+                renderRow={(item) => {
                   return (
                     <Item 
                       changeMode={item => this._showActionSheet(item)}
