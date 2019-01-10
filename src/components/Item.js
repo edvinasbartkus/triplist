@@ -5,19 +5,17 @@ import {Subscribe} from 'unstated'
 import DirectionsContainer from '../containers/DirectionsContainer'
 import Circle from './Circle'
 import {getColor} from '../utils/consts'
+import Round from './Round'
 
 export default class Item extends Component {
   renderETA (directions, item) {
     if (item.previous) {
       const route = directions.get(item.mode, item.previous.location, item.location)
       if (route) {
-        let {distance, duration} = route
-        distance = distance > 10 ? Math.round(distance) : Math.round(distance * 10) / 10
-        duration = Math.round(duration)
         return (
           <TouchableOpacity onPress={() => this.props.changeMode(item)}>
             <Text style={styles.subline}>
-              {distance}km of {item.mode} in {duration} {duration > 1 ? 'minutes' : 'minute'}
+              <Round value={route.distance} /> of <Text style={styles.underline}>{item.mode}</Text> in <Round isTime value={route.duration} />
             </Text>
           </TouchableOpacity>
         )
@@ -134,4 +132,8 @@ const styles = StyleSheet.create({
   actionsContainer: {
     flexDirection: 'row'
   },
+
+  underline: {
+    color: '#007aff'
+  }
 })
