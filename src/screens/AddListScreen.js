@@ -25,6 +25,7 @@ export default class AddListScreen extends Component {
       <Subscribe to={[ListsContainer]}>
       {lists => <View>
         <TextInput
+          testID='NewListName'
           value={this.state.name}
           onChangeText={name => this.setState({name})}
           style={styles.input}
@@ -33,6 +34,7 @@ export default class AddListScreen extends Component {
         />
         <View style={styles.buttonContainer}>
           <TouchableOpacity
+            testID='NewListSave'
             style={styles.button}
             onPress={() => this.onPress(lists)}
             accessibilityLabel="Create a new list with your chosen name">
