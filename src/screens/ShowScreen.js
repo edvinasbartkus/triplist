@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {StyleSheet} from 'react-native'
+import {StyleSheet, View, Text} from 'react-native'
 import {Navigation} from 'react-native-navigation'
 import Map from '../components/Map'
 import SortableListView from 'react-native-sortable-listview'
