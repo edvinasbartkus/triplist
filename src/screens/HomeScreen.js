@@ -146,7 +146,7 @@ export default class HomeScreen extends Component {
     })
   }
 
-  onPress (list) {
+  onPress (list, index) {
     Navigation.push(this.props.componentId, {
       component: {
         name: 'todotrip.Show',
@@ -156,11 +156,18 @@ export default class HomeScreen extends Component {
         options: {
           topBar: {
             title: {
-              text: list.name
+              text: list.name,
+              color: 'white'
+            },
+            background: {
+              color: getColor(index),
+              translucent: false,
+              blur: false
             },
             backButton: {
               title: 'Back',
-              showTitle: false
+              showTitle: false,
+              color: 'white'
             }
           },
         }
@@ -192,7 +199,7 @@ export default class HomeScreen extends Component {
       <TouchableOpacity
         key={list.name}
         style={styles.card}
-        onPress={() => this.onPress(list)}>
+        onPress={() => this.onPress(list, index)}>
         <View style={[styles.innerCard, {backgroundColor: getColor(index)}]}>
           {!list.public ?
             <TouchableOpacity style={styles.image} onPress={() => this.onActions(container, list)}>

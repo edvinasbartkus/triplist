@@ -1,8 +1,6 @@
 import React, {Component} from 'react'
-import {View, Text, AlertIOS, StyleSheet} from 'react-native'
+import {AlertIOS, StyleSheet} from 'react-native'
 import MapView, {Marker} from 'react-native-maps'
-import {KEY} from './../utils/maps'
-import MapViewDirections from 'react-native-maps-directions'
 import {getColor} from '../utils/consts'
 import Circle from './Circle'
 import uuid from 'uuid'
@@ -11,14 +9,61 @@ import ListsContainer from '../containers/ListsContainer';
 import DirectionsContainer from '../containers/DirectionsContainer';
 import Directions from './Directions'
 
-export default class Map extends Component {
-  constructor (props) {
-    super(props)
+function getRegionForCoordinates (points) {
+  if (!points.length) {
+    return {
+      latitude: 37.78825,
+      longitude: -122.4324,
+      latitudeDelta: 0.0922,
+      longitudeDelta: 0.0421
+    }
   }
 
-  fitToElements () {
-    if (this.map) {
-      this.map.fitToElements(true)
+  // points should be an array of { latitude: X, longitude: Y }
+  let minX, maxX, minY, maxY
+
+  // init first point
+  ((point) => {
+    minX = point.latitude
+    maxX = point.latitude
+    minY = point.longitude
+    maxY = point.longitude
+  })(points[0])
+
+  // calculate rect
+  points.map((point) => {
+    minX = Math.min(minX, point.latitude)
+    maxX = Math.max(maxX, point.latitude)
+    minY = Math.min(minY, point.longitude)
+    maxY = Math.max(maxY, point.longitude)
+  });
+
+  const midX = (minX + maxX) / 2
+  const midY = (minY + maxY) / 2
+  const deltaX = (maxX - minX)
+  const deltaY = (maxY - minY)
+
+  return {
+    latitude: midX,
+    longitude: midY,
+    latitudeDelta: deltaX * 1.3,
+    longitudeDelta: deltaY * 1.3
+  }
+}
+
+class Map extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      initialRegion: getRegionForCoordinates(props.items.map(it => it.location))
+    }
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.items !== this.props.items) {
+      this.setState({
+        initialRegion: getRegionForCoordinates(nextProps.items.map(it => it.location))
+      })
     }
   }
 
@@ -91,28 +136,28 @@ export default class Map extends Component {
   }
 
   render () {
-    const {listId} = this.props
+    const {lists, items, listId} = this.props
     return (
-      <Subscribe to={[ListsContainer]}>
-        {lists =>
-          <MapView
-            ref={map => { this.map = map } }
-            style={styles.map}
-            onPoiClick={poi => this.onAdd(poi)}
-            onLongPress={e => this.onLongPress(e, lists, listId)}
-            initialRegion={{
-              latitude: 37.78825,
-              longitude: -122.4324,
-              latitudeDelta: 0.0922,
-              longitudeDelta: 0.0421,
-            }}
-          >
-            {lists.getItems(listId).map((it, index) => this.renderMarker(it, index))}
-            {this.renderDirections(lists.getItems(listId))}
-          </MapView>
-        }
-      </Subscribe>
+      <MapView
+        style={styles.map}
+        onPoiClick={poi => this.onAdd(poi)}
+        onLongPress={e => this.onLongPress(e, lists, listId)}
+        initialRegion={this.state.initialRegion}
+      >
+        {items.map((it, index) => this.renderMarker(it, index))}
+        {this.renderDirections(items)}
+      </MapView>
     )
+  }
+}
+
+export default class MapContainer extends React.PureComponent {
+  render () {
+    return <Subscribe to={[ListsContainer]}>
+      {lists =>
+        <Map lists={lists} items={lists.getItems(this.props.listId)} {...this.props} />
+      }
+    </Subscribe>
   }
 }
 
