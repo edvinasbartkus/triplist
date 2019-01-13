@@ -22,11 +22,7 @@ export default class ShowScreen extends Component {
   static options(passProps) {
     return {
       topBar: {
-        drawBehind: true,
-        background: {
-          translucent: true,
-          blur: true,
-        },
+        drawBehind: false,
         visible: true,
         rightButtons: [
           {
@@ -41,12 +37,6 @@ export default class ShowScreen extends Component {
   constructor (props) {
     super(props)
     Navigation.events().bindComponent(this)
-  }
-
-  async componentDidAppear () {
-    if (this.map) {
-      this.map.fitToElements()
-    }
   }
 
   navigationButtonPressed({ buttonId }) {
@@ -133,7 +123,6 @@ export default class ShowScreen extends Component {
                 automaticallyAdjustContentInsets={false}
                 order={lists.order(listId)}
                 data={lists.set(listId)}
-                contentInset={{top: -50}}
                 renderHeader={this._headerComponent}
                 renderFooter={this._footerComponent}
                 style={styles.list}
