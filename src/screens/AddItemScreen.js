@@ -1,10 +1,11 @@
 import React, {Component} from 'react'
 import {View, Text, NativeModules, StyleSheet, Button, FlatList} from 'react-native'
 import {Navigation} from 'react-native-navigation'
-import {updateList} from './../utils/db'
 import uuid from 'uuid'
 import { Subscribe } from 'unstated';
 import ListsContainer from '../containers/ListsContainer';
+import {distance} from '../utils/maps';
+import Round from '../components/Round'
 
 export default class AddItemScreen extends Component {
   static options(passProps) {
@@ -31,6 +32,12 @@ export default class AddItemScreen extends Component {
 
   searchBarUpdated({ text, isFocused }) {
     const oldSearch = this.state.search
+    if (this.state.isFocused && !isFocused) {
+      this.setState({search: text, isFocused})
+      this.search(text)
+      return
+    }
+
     this.setState({search: text, isFocused})
 
     if (text === oldSearch) {
@@ -43,7 +50,7 @@ export default class AddItemScreen extends Component {
 
     this.timer = setTimeout(() => {
       this.search(text)
-    }, 1000)
+    }, 50)
   }
 
   search (text) {
@@ -62,6 +69,15 @@ export default class AddItemScreen extends Component {
     Navigation.pop(this.props.componentId)
   }
 
+  lastPosition (container) {
+    const items = container.getItems(this.props.listId)
+    if (items.length) {
+      return items[items.length - 1].location
+    } else {
+      return container.getList(this.props.listId).region
+    }
+  }
+
   renderResult (container, location) {
     /*
       {
@@ -78,7 +94,11 @@ export default class AddItemScreen extends Component {
       <View key={location.name} style={styles.row}>
         <View style={styles.texts}>
           <Text style={styles.name}>{location.name}</Text>
-          <Text style={styles.title}>{location.title}</Text>
+          <Text style={styles.title}>
+            <Round value={distance(location.location, this.lastPosition(container))} />
+            <Text> away · </Text>
+            {location.title}
+          </Text>
         </View>
         <View style={styles.buttonContainer}>
           <Button
@@ -91,7 +111,7 @@ export default class AddItemScreen extends Component {
   }
 
   render () {
-    const {results, isFocused} = this.state
+    const {results} = this.state
     return (
       <Subscribe to={[ListsContainer]}>
         {lists =>
@@ -100,10 +120,25 @@ export default class AddItemScreen extends Component {
             keyExtractor={(item, index) => item.name}
             renderItem={({item}) => this.renderResult(lists, item)}
             ItemSeparatorComponent={() => <View style={styles.separator} />}
-            ListFooterComponent={() => <View style={styles.separator} />}
+            ListFooterComponent={() => <Footer results={this.state.results} />}
           />
         }
       </Subscribe>
+    )
+  }
+}
+
+class Footer extends React.PureComponent {
+  render () {
+    return (
+      <View>
+        <View style={styles.separator} />
+        {this.props.results.length ?
+          <View style={styles.footer}>
+            <Text style={styles.footerText}>The distance is calculated between the last item in the list and the search result item.</Text>
+          </View>
+          : undefined}
+      </View>
     )
   }
 }
@@ -136,6 +171,15 @@ const styles = StyleSheet.create({
 
   separator: {
     borderTopWidth: 1,
-    borderTopColor: '#666'
+    borderTopColor: '#D0D1D0'
+  },
+
+  footer: {
+    padding: 20
+  },
+
+  footerText: {
+    color: '#D0D1D0',
+    fontSize: 12
   }
 })

@@ -8,61 +8,20 @@ import { Subscribe } from 'unstated';
 import ListsContainer from '../containers/ListsContainer';
 import DirectionsContainer from '../containers/DirectionsContainer';
 import Directions from './Directions'
-
-function getRegionForCoordinates (points) {
-  if (!points.length) {
-    return {
-      latitude: 37.78825,
-      longitude: -122.4324,
-      latitudeDelta: 0.0922,
-      longitudeDelta: 0.0421
-    }
-  }
-
-  // points should be an array of { latitude: X, longitude: Y }
-  let minX, maxX, minY, maxY
-
-  // init first point
-  ((point) => {
-    minX = point.latitude
-    maxX = point.latitude
-    minY = point.longitude
-    maxY = point.longitude
-  })(points[0])
-
-  // calculate rect
-  points.map((point) => {
-    minX = Math.min(minX, point.latitude)
-    maxX = Math.max(maxX, point.latitude)
-    minY = Math.min(minY, point.longitude)
-    maxY = Math.max(maxY, point.longitude)
-  });
-
-  const midX = (minX + maxX) / 2
-  const midY = (minY + maxY) / 2
-  const deltaX = (maxX - minX)
-  const deltaY = (maxY - minY)
-
-  return {
-    latitude: midX,
-    longitude: midY,
-    latitudeDelta: deltaX * 1.3,
-    longitudeDelta: deltaY * 1.3
-  }
-}
+import {getRegionForCoordinates} from '../utils/maps'
 
 class Map extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      initialRegion: getRegionForCoordinates(props.items.map(it => it.location))
+      initialRegion: props.list.region // getRegionForCoordinates(props.items.map(it => it.location))
     }
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.items !== this.props.items) {
+    if (nextProps.list !== this.props.list) {
       this.setState({
-        initialRegion: getRegionForCoordinates(nextProps.items.map(it => it.location))
+        initialRegion: nextProps.list.region
       })
     }
   }
@@ -136,7 +95,8 @@ class Map extends Component {
   }
 
   render () {
-    const {lists, items, listId} = this.props
+    const {lists, listId} = this.props
+    const items = lists.getItems(listId)
     return (
       <MapView
         style={styles.map}
@@ -155,7 +115,7 @@ export default class MapContainer extends React.PureComponent {
   render () {
     return <Subscribe to={[ListsContainer]}>
       {lists =>
-        <Map lists={lists} items={lists.getItems(this.props.listId)} {...this.props} />
+        <Map lists={lists} list={lists.getList(this.props.listId)} {...this.props} />
       }
     </Subscribe>
   }
