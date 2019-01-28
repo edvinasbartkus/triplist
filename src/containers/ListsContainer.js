@@ -1,6 +1,7 @@
 import {Container} from 'unstated'
 import uuid from 'uuid'
 import * as db from '../utils/db'
+import {getRegionForCoordinates} from '../utils/maps'
 
 const jsonLists = [
   {name: 'Vilnius', public: true, items: [
@@ -112,6 +113,7 @@ export default class ListsContainer extends Container {
 
   // Lists
   async saveList (list) {
+    list.region = getRegionForCoordinates(list.items.map(it => it.location))
     this.setState({
       lists: this.state.lists.concat(list)
     })
@@ -121,6 +123,8 @@ export default class ListsContainer extends Container {
 
   async updateList (list) {
     list.items = list.items.map((it, index) => ({...it, index: index + 1}))
+    list.region = getRegionForCoordinates(list.items.map(it => it.location))
+
     this.setState({
       lists: this.state.lists.map(it => it._id === list._id ? list : it)
     })
